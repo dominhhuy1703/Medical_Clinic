@@ -16,7 +16,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       body: SafeArea(
         child: Center(
-          child: Padding(
+          child: SingleChildScrollView(  // Thêm SingleChildScrollView
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -59,7 +59,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 SizedBox(height: 20),
                 // Phone Field - only allows number input
                 TextField(
-                  keyboardType: TextInputType.number,  // Chỉ cho phép nhập số
+                  keyboardType: TextInputType.phone,  // Để chỉ cho phép nhập số điện thoại
                   decoration: InputDecoration(
                     labelText: 'Số điện thoại',
                     border: OutlineInputBorder(),

@@ -1,43 +1,58 @@
 import 'package:flutter/material.dart';
+import 'personal_screen.dart';
 
 class HomeScreen extends StatelessWidget {
+  Color primaryColor = Color(0xFF1F2B6C);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Xin chào Huy'),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            Text(
-              '👋 Xin chào Huy Đỗ',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            SizedBox(height: 60), // Khoảng cách phía trên dòng "Xin chào Huy Đỗ"
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '👋 Xin chào Huy Đỗ',
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                ),
+                CircleAvatar(
+                  radius: 25,
+                  backgroundImage: AssetImage('assets/avatar.png'), // Thay thế bằng đường dẫn ảnh avatar đúng
+                ),
+              ],
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
             Expanded(
               child: ListView(
                 children: [
                   _buildHomeTile(
                     context,
                     'Thông tin cá nhân',
-                    'assets/personal_info.png', // Replace with correct asset
+                    'assets/personal_info.png',
                   ),
                   _buildHomeTile(
                     context,
                     'Đặt lịch khám',
-                    'assets/appointment.png', // Replace with correct asset
+                    'assets/appointment.png',
                   ),
                   _buildHomeTile(
                     context,
-                    'Chỉ số sức khỏe', 'assets/health_metrics.png'),
+                    'Chỉ số sức khỏe',
+                    'assets/health_metrics.png',
+                  ),
                   _buildHomeTile(
                     context,
-                    'Lịch sử khám', 'assets/medical_history.png'),
+                    'Lịch sử khám',
+                    'assets/medical_history.png',
+                  ),
                   _buildHomeTile(
                     context,
-                    'Tư vấn online', 'assets/online_consult.png'),
+                    'Tư vấn online',
+                    'assets/online_consult.png',
+                  ),
                 ],
               ),
             ),
@@ -51,7 +66,7 @@ class HomeScreen extends StatelessWidget {
           BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: 'Lịch sử'),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Cài đặt'),
         ],
-        selectedItemColor: Colors.blue,
+        selectedItemColor: primaryColor,
         unselectedItemColor: Colors.grey,
       ),
     );
@@ -59,18 +74,30 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildHomeTile(BuildContext context, String title, String imagePath) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Card(
         elevation: 3,
-        child: ListTile(
-          leading: Image.asset(imagePath, width: 50, height: 50),
-          title: Text(
-            title,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+        child: Container(
+          height: 70,
+          child: ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
+            leading: Image.asset(imagePath, width: 50, height: 50),
+            title: Text(
+              title,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+            ),
+            onTap: () {
+              if (title == 'Thông tin cá nhân') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PersonalScreen(),
+                  ),
+                );
+              }
+              // Các hành động khác cho các mục khác nếu cần
+            },
           ),
-          onTap: () {
-            // Add navigation or actions based on tile tap
-          },
         ),
       ),
     );
