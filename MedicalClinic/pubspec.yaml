@@ -70,6 +70,13 @@ flutter:
     - assets/health_metrics.png
     - assets/medical_history.png
     - assets/online_consult.png
+    - assets/doctor_icon.png
+    - assets/cardiology_service_icon.png
+    - assets/medical_service_icon.png
+    - assets/medical_service_icon.png
+    - assets/obstetrics_service_icon.png
+    - assets/Pediatric_service_icon.png
+    - assets/doctor1.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

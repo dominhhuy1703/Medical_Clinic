@@ -57,7 +57,7 @@ class AppointmentPage extends StatelessWidget {
             SizedBox(height: 20),
             OptionCard(
               title: 'Dịch vụ y tế',
-              image: 'assets/medical_service_icon.png', // Replace with your image asset path
+              image: 'assets/medical_service_icon.png',
               color: Color(0xFFE5D9F2),
               onPressed: () {
                 Navigator.push(
