@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'online_consultant.dart';
 
 void main() {
   runApp(MyApp());
@@ -37,7 +38,12 @@ class _QuestionPageState extends State<QuestionPage> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => OnlineConsultationScreen()),
+            );
+          },
         ),
         title: Text(
           'Đặt câu hỏi',
