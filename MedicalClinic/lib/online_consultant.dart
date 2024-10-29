@@ -102,7 +102,7 @@ class OnlineConsultationScreen extends StatelessWidget {
               ),
               child: Text(
                 'Đặt câu hỏi',
-                style: TextStyle(fontSize: 16, color: Colors.white),
+                style: TextStyle(fontSize: 16 color: Colors.white),
               ),
             ),
             SizedBox(height: 16.0),
