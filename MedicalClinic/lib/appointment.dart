@@ -46,7 +46,7 @@ class AppointmentPage extends StatelessWidget {
             OptionCard(
               title: 'Bác sĩ',
               image: 'assets/doctor_icon.png',
-              color: Color(0xFFE5D9F2),
+              color: Color(0xFFE5D9F2),//fixlaimau
               onPressed: () {
                 Navigator.push(
                   context,
