@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import'questions.dart';
+import'home_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -8,7 +10,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       home: OnlineConsultationScreen(),
     );
   }
@@ -33,7 +34,12 @@ class OnlineConsultationScreen extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+            );
+          },
         ),
         title: Text(
           'Tư vấn online',
@@ -92,6 +98,11 @@ class OnlineConsultationScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
 
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => QuestionPage()),
+                );
+
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF1F2B6C),
@@ -102,7 +113,7 @@ class OnlineConsultationScreen extends StatelessWidget {
               ),
               child: Text(
                 'Đặt câu hỏi',
-                style: TextStyle(fontSize: 16 color: Colors.white),
+                style: TextStyle(fontSize: 16, color: Colors.white),
               ),
             ),
             SizedBox(height: 16.0),
