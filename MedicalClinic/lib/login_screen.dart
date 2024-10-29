@@ -12,7 +12,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   // Sample credentials
-  final String correctPhone = 'dominhhuy1703@gmail.com';
+  final String correctPhone = '0942322419';
   final String correctPassword = '170302';
 
   Color primaryColor = Color(0xFF1F2B6C);
@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       // Show an error message if credentials are incorrect
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Invalid email or password')),
+        SnackBar(content: Text('Invalid phone or password')),
       );
     }
   }
