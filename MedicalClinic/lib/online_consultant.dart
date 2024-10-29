@@ -95,10 +95,10 @@ class OnlineConsultationScreen extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF1F2B6C),
-                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(20),
                 ),
+                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               ),
               child: Text(
                 'Đặt câu hỏi',
