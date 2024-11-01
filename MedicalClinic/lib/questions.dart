@@ -60,6 +60,7 @@ class _QuestionPageState extends State<QuestionPage> {
               value: selectedSpecialty,
               items: specialties
                   .map((specialty) => DropdownMenuItem<String>(
+
                 value: specialty,
                 child: Text(specialty),
               ))
@@ -76,6 +77,7 @@ class _QuestionPageState extends State<QuestionPage> {
               },
             ),
             SizedBox(height: 16),
+
             DropdownButtonFormField<String>(
               value: selectedGender,
               items: genders
@@ -127,23 +129,28 @@ class _QuestionPageState extends State<QuestionPage> {
                 filled: true,
               ),
             ),
-            SizedBox(height: 24),
+            Spacer (),
             Center(
               child: ElevatedButton(
                 onPressed: () {
-
-
+                      ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Đặt câu hỏi thành công")),
+                      );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF1F2B6C),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                  padding: EdgeInsets.symmetric(horizontal: 100, vertical: 15),
                 ),
                 child: Text(
                   'Đặt câu hỏi',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(
+                      fontSize: 18,
+                    color: Colors.white,
+                      fontWeight: FontWeight.bold
+                  ),
                 ),
               ),
             ),
