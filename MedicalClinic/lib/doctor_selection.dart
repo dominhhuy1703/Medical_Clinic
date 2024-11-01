@@ -111,7 +111,7 @@ class DoctorSelectionPage extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                padding: EdgeInsets.symmetric(horizontal: 100, vertical: 8),
               ),
               child: Text(
                 'Chọn thời gian',
