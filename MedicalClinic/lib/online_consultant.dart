@@ -109,11 +109,13 @@ class OnlineConsultationScreen extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                padding: EdgeInsets.symmetric(horizontal: 100, vertical: 15),
               ),
               child: Text(
                 'Đặt câu hỏi',
-                style: TextStyle(fontSize: 16, color: Colors.white),
+                style: TextStyle(fontSize: 16,
+                    color: Colors.white,
+                ),
               ),
             ),
             SizedBox(height: 16.0),

@@ -82,6 +82,7 @@ class ServicePage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
+
             ElevatedButton(
               onPressed: () {
                 //////
@@ -92,7 +93,7 @@ class ServicePage extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                padding: EdgeInsets.symmetric(horizontal: 100, vertical: 15),
               ),
               child: Text(
                 'Chọn thời gian',
