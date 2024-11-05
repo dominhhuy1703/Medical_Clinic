@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'personal_screen.dart';
+import 'online_consultant.dart';
 
 class HomeScreen extends StatelessWidget {
   Color primaryColor = Color(0xFF1F2B6C);
@@ -92,6 +93,14 @@ class HomeScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => PersonalScreen(),
+                  ),
+                );
+              }
+              if (title == 'Tư vấn online') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OnlineConsultationScreen(),
                   ),
                 );
               }
