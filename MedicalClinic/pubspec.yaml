@@ -79,7 +79,8 @@ flutter:
     - assets/obstetrics_service_icon.png
     - assets/Pediatric_service_icon.png
     - assets/doctor1.png
-    - assets/doctor.json
+    - assets/fakedata.json
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
