@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'appointment_overall.dart';
 import 'dart:convert';
-import 'doctor.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'doctor_detail.dart';
+import 'appointment_overall.dart';
 
 void main() {
   runApp(MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   @override
@@ -18,33 +17,15 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
-
-class DoctorService {
-  Future<List<Doctor>> fetchDoctors() async {
-    //final response = await http.get(Uri.parse('....'));
-    //if (response.statusCode == 200) {
-      //List jsonResponse = json.decode(response.body);
-     // return jsonResponse.map((data) => Doctor.fromJson(data)).toList();
-    //} else {
-     // throw Exception('Failed to load doctor data');
-    //}
-
-    final String response = await rootBundle.loadString('assets/doctor.json');
-    List jsonResponse = json.decode(response);
-    return jsonResponse.map((data) => Doctor.fromJson(data)).toList();
-  }
-}
 class DoctorSelectionPage extends StatefulWidget {
   @override
   _DoctorSelectionPageState createState() => _DoctorSelectionPageState();
 }
 
 class _DoctorSelectionPageState extends State<DoctorSelectionPage> {
-  final DoctorService doctorService = DoctorService();
-  TextEditingController _searchController = TextEditingController();
-  List<Doctor> _filteredDoctors = [];
   List<Doctor> _allDoctors = [];
+  List<Doctor> _filteredDoctors = [];
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -52,20 +33,22 @@ class _DoctorSelectionPageState extends State<DoctorSelectionPage> {
     _loadDoctors();
   }
 
-  //loadthongtin
   Future<void> _loadDoctors() async {
-    List<Doctor> doctors = await doctorService.fetchDoctors();
+    final String response = await rootBundle.loadString('assets/fakedata.json');
+    final data = json.decode(response);
+    List<Doctor> doctors = (data['doctor'] as List)
+        .map((doctorData) => Doctor.fromJson(doctorData))
+        .toList();
+
     setState(() {
       _allDoctors = doctors;
       _filteredDoctors = doctors;
     });
   }
-
-  //timkiem
+//timkiemdoctor
   void _filterDoctors(String query) {
     List<Doctor> filteredList = _allDoctors.where((doctor) {
-      return doctor.name.toLowerCase().contains(query.toLowerCase()) ||
-          doctor.specialty.toLowerCase().contains(query.toLowerCase());
+      return doctor.name.toLowerCase().contains(query.toLowerCase());
     }).toList();
 
     setState(() {
@@ -79,6 +62,7 @@ class _DoctorSelectionPageState extends State<DoctorSelectionPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
+        elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
@@ -95,7 +79,8 @@ class _DoctorSelectionPageState extends State<DoctorSelectionPage> {
           ),
         ),
         centerTitle: true,
-        elevation: 0,
+
+
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -127,12 +112,12 @@ class _DoctorSelectionPageState extends State<DoctorSelectionPage> {
                   final doctor = _filteredDoctors[index];
                   return DoctorCard(
                     onTap: () {
-                      print("Doctor selected: ${doctor.name}");
-
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) => .....()),
-                      // );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DoctorDetailPage(doctor: doctor),
+                        ),
+                      );
                     },
                     name: doctor.name,
                     specialty: doctor.specialty,
@@ -140,29 +125,7 @@ class _DoctorSelectionPageState extends State<DoctorSelectionPage> {
                     reviews: doctor.reviews,
                     imageUrl: doctor.imageUrl,
                   );
-
                 },
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // edit
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF1F2B6C),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 100, vertical: 8),
-              ),
-              child: Text(
-                'Chọn thời gian',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
               ),
             ),
           ],
@@ -171,6 +134,7 @@ class _DoctorSelectionPageState extends State<DoctorSelectionPage> {
     );
   }
 }
+
 class DoctorCard extends StatelessWidget {
   final String name;
   final String specialty;
@@ -191,54 +155,104 @@ class DoctorCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: onTap,
-        child: Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundImage: NetworkImage(imageUrl),
-            ),
-            SizedBox(height: 8),
-            Text(
-              name,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
+      onTap: onTap,
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        elevation: 2,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircleAvatar(
+                radius: 30,
+                backgroundImage: AssetImage(imageUrl),
               ),
-            ),
-            Text(
-              specialty,
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 14,
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.star, color: Colors.yellow[700], size: 16),
-                SizedBox(width: 4),
-                Text(
-                  '$rating ($reviews reviews)',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 12,
-                  ),
+              SizedBox(height: 8),
+              Text(
+                name,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
                 ),
-              ],
-            ),
-          ],
+              ),
+              Text(
+                specialty,
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 14,
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.star, color: Colors.yellow[700], size: 16),
+                  SizedBox(width: 4),
+                  Text(
+                    '$rating ($reviews reviews)',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
-        ),
+    );
+  }
+}
+class Doctor {
+  final String name;
+  final String specialty;
+  final double rating;
+  final int reviews;
+  final String imageUrl;
+  final String? experience;
+  final String? education;
+  final List<String>? languages;
+  final String? bio;
+  final List<String>? treatmentAreas;
+  final List<Map<String, String>>? availability;
+  final Map<String, String>? contactInfo;
+
+  Doctor({
+    required this.name,
+    required this.specialty,
+    required this.rating,
+    required this.reviews,
+    required this.imageUrl,
+    this.experience,
+    this.education,
+    this.languages,
+    this.bio,
+    this.treatmentAreas,
+    this.availability,
+    this.contactInfo,
+  });
+
+  factory Doctor.fromJson(Map<String, dynamic> json) {
+    return Doctor(
+      name: json['name'],
+      specialty: json['specialty'],
+      rating: json['rating'],
+      reviews: json['reviews'],
+      imageUrl: json['imageUrl'],
+      experience: json['experience'],
+      education: json['education'],
+      languages: (json['languages'] as List<dynamic>?)?.cast<String>(),
+      bio: json['bio'],
+      treatmentAreas: (json['treatment_areas'] as List<dynamic>?)?.cast<String>(),
+      availability: (json['availability'] as List<dynamic>?)
+          ?.map((item) => Map<String, String>.from(item))
+          .toList(),
+      contactInfo: json['contact_info'] != null
+          ? Map<String, String>.from(json['contact_info'])
+          : null,
     );
   }
 }
