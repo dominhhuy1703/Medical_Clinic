@@ -41,7 +41,7 @@ class _QuestionPageState extends State<QuestionPage> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => OnlineConsultationScreen()),
+              MaterialPageRoute(builder: (context) => OnlineConsultationPage()),
             );
           },
         ),
