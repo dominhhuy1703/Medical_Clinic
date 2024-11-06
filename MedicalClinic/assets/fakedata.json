@@ -1,0 +1,100 @@
+{
+  "questions": [
+    "Cách ly F0 tại nhà?",
+    "Cách để ăn nhiều mà vẫn gầy?",
+    "Chữa bệnh lao phổi tại nhà?",
+    "Cách cấp cứu nhanh khi cano bị lật?"
+  ],
+
+  "services": [
+    {
+      "name": "Khoa Tim",
+      "imageUrl": "assets/cardiology_service_icon.png"
+    },
+    {
+      "name": "Khoa Nhi",
+      "imageUrl": "assets/pediatric_service_icon.png"
+    },
+    {
+      "name": "Khoa Chỉnh Hình",
+      "imageUrl": "assets/orthopaedics_service_icon.png"
+    },
+    {
+      "name": "Khoa Sản",
+      "imageUrl": "assets/obstetrics_service_icon.png"
+    }
+  ],
+
+  "doctor": [
+    {
+      "name": "Nhi",
+      "specialty": "Khoa Nhi",
+      "rating": 4.5,
+      "reviews": 135,
+      "imageUrl": "assets/doctor1.png"
+    },
+    {
+      "name": "Nhân",
+      "specialty": "Khoa Chỉnh hình",
+      "rating": 4.3,
+      "reviews": 130,
+      "imageUrl": "assets/doctor2.png"
+    },
+    {
+      "name": "Ngọc",
+      "specialty": "Khoa Sản",
+      "rating": 4.5,
+      "reviews": 135,
+      "imageUrl": "assets/doctor3.png"
+    },
+    {
+      "name": "Sally",
+      "specialty": "Khoa Tiêu hoá",
+      "rating": 4.3,
+      "reviews": 130,
+      "imageUrl": "assets/doctor4.png"
+    },
+    {
+      "name": "Huy",
+      "specialty": "Khoa Thần kinh",
+      "rating": 4.3,
+      "reviews": 130,
+      "imageUrl": "assets/doctor5.png"
+    }
+  ],
+
+  "doctor_detail": {
+    "name": "Nhi",
+    "specialty": "Khoa Nhi",
+    "rating": 4.5,
+    "reviews": 135,
+    "imageUrl": "assets/doctor1.png",
+    "experience": "20 năm kinh nghiệm trong lĩnh vực Nhi khoa",
+    "education": "Đại học Y Hà Nội",
+    "languages": ["Tiếng Việt", "Tiếng Anh"],
+    "bio": "BS. Nhi là một chuyên gia trong lĩnh vực nhi khoa, với nhiều năm kinh nghiệm điều trị các bệnh lý của trẻ em. Bà đã đóng góp nhiều công trình nghiên cứu và giảng dạy tại các bệnh viện lớn.",
+    "treatment_areas": [
+      "Điều trị các bệnh truyền nhiễm ở trẻ em",
+      "Tư vấn dinh dưỡng và phát triển cho trẻ",
+      "Theo dõi sức khoẻ và tiêm chủng"
+    ],
+    "availability": [
+      {
+        "day": "Thứ Hai",
+        "time": "9:00 - 12:00"
+      },
+      {
+        "day": "Thứ Ba",
+        "time": "13:00 - 17:00"
+      },
+      {
+        "day": "Thứ Tư",
+        "time": "9:00 - 12:00"
+      }
+    ],
+    "contact_info": {
+      "phone": "0123456789",
+      "email": "nhinguyen0492@gmail.com"
+    }
+  }
+}

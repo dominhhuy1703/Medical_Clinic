@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Nhi",
+    "specialty": "Khoa Nhi",
+    "rating": 4.5,
+    "reviews": 135,
+    "imageUrl": "assets/doctor1.png"
+  },
+  {
+    "name": "Nhân",
+    "specialty": "Khoa Chỉnh hình",
+    "rating": 4.3,
+    "reviews": 130,
+    "imageUrl": "assets/doctor2.png"
+  },
+  {
+    "name": "Ngọc",
+    "specialty": "Khoa Sản",
+    "rating": 4.5,
+    "reviews": 135,
+    "imageUrl": "assets/doctor3.png"
+  },
+  {
+    "name": "Sally",
+    "specialty": "Khoa Tiêu hoá",
+    "rating": 4.3,
+    "reviews": 130,
+    "imageUrl": "assets/doctor4.png"
+  },
+  {
+    "name": "Huy",
+    "specialty": "Khoa Thần kinh",
+    "rating": 4.3,
+    "reviews": 130,
+    "imageUrl": "assets/doctor5.png"
+  }
+]

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'personal_screen.dart';
 import 'online_consultant.dart';
-
+import 'medical_history.dart';
+import 'appointment_overall.dart';
 class HomeScreen extends StatelessWidget {
   Color primaryColor = Color(0xFF1F2B6C);
   @override
@@ -100,11 +101,27 @@ class HomeScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => OnlineConsultationScreen(),
+                    builder: (context) => OnlineConsultationPage(),
                   ),
                 );
               }
-              // Các hành động khác cho các mục khác nếu cần
+              if (title == 'Lịch sử khám') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MedicalHistoryPage(),
+                  ),
+                );
+              }
+
+              if (title == 'Đặt lịch khám') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AppointmentPage(),
+                  ),
+                );
+              }
             },
           ),
         ),
