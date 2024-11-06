@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'appointment_overall.dart';
+import 'dart:convert';
+import 'doctor.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 void main() {
   runApp(MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   @override
@@ -14,7 +18,61 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class DoctorSelectionPage extends StatelessWidget {
+
+
+class DoctorService {
+  Future<List<Doctor>> fetchDoctors() async {
+    //final response = await http.get(Uri.parse('....'));
+    //if (response.statusCode == 200) {
+      //List jsonResponse = json.decode(response.body);
+     // return jsonResponse.map((data) => Doctor.fromJson(data)).toList();
+    //} else {
+     // throw Exception('Failed to load doctor data');
+    //}
+
+    final String response = await rootBundle.loadString('assets/doctor.json');
+    List jsonResponse = json.decode(response);
+    return jsonResponse.map((data) => Doctor.fromJson(data)).toList();
+  }
+}
+class DoctorSelectionPage extends StatefulWidget {
+  @override
+  _DoctorSelectionPageState createState() => _DoctorSelectionPageState();
+}
+
+class _DoctorSelectionPageState extends State<DoctorSelectionPage> {
+  final DoctorService doctorService = DoctorService();
+  TextEditingController _searchController = TextEditingController();
+  List<Doctor> _filteredDoctors = [];
+  List<Doctor> _allDoctors = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDoctors();
+  }
+
+  //loadthongtin
+  Future<void> _loadDoctors() async {
+    List<Doctor> doctors = await doctorService.fetchDoctors();
+    setState(() {
+      _allDoctors = doctors;
+      _filteredDoctors = doctors;
+    });
+  }
+
+  //timkiem
+  void _filterDoctors(String query) {
+    List<Doctor> filteredList = _allDoctors.where((doctor) {
+      return doctor.name.toLowerCase().contains(query.toLowerCase()) ||
+          doctor.specialty.toLowerCase().contains(query.toLowerCase());
+    }).toList();
+
+    setState(() {
+      _filteredDoctors = filteredList;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,6 +102,8 @@ class DoctorSelectionPage extends StatelessWidget {
         child: Column(
           children: [
             TextField(
+              controller: _searchController,
+              onChanged: _filterDoctors,
               decoration: InputDecoration(
                 hintText: 'Tìm kiếm bác sĩ',
                 prefixIcon: Icon(Icons.search),
@@ -56,55 +116,38 @@ class DoctorSelectionPage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                children: [
-                  DoctorCard(
-                    name: 'Nhi',
-                    specialty: 'Khoa Nhi',
-                    rating: 4.5,
-                    reviews: 135,
-                    imageUrl: 'assets/doctor1.png',
+              child: GridView.builder(
+                itemCount: _filteredDoctors.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                ),
+                itemBuilder: (context, index) {
+                  final doctor = _filteredDoctors[index];
+                  return DoctorCard(
+                    onTap: () {
+                      print("Doctor selected: ${doctor.name}");
 
-                  ),
-                  DoctorCard(
-                    name: 'Nhân',
-                    specialty: 'Khoa Chỉnh hình',
-                    rating: 4.3,
-                    reviews: 130,
-                    imageUrl: 'assets/doctor2.png',
-                  ),
-                  DoctorCard(
-                    name: 'Ngọc',
-                    specialty: 'Khoa Sản',
-                    rating: 4.5,
-                    reviews: 135,
-                    imageUrl: 'assets/doctor3.png',
-                  ),
-                  DoctorCard(
-                    name: 'Sally',
-                    specialty: 'Khoa Tiêu hoá',
-                    rating: 4.3,
-                    reviews: 130,
-                    imageUrl: 'assets/doctor4.png',
-                  ),
-                  DoctorCard(
-                    name: 'Huy',
-                    specialty: 'Khoa Thần kinh',
-                    rating: 4.3,
-                    reviews: 130,
-                    imageUrl: 'assets/doctor4.png',
-                  ),
-                ],
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => .....()),
+                      // );
+                    },
+                    name: doctor.name,
+                    specialty: doctor.specialty,
+                    rating: doctor.rating,
+                    reviews: doctor.reviews,
+                    imageUrl: doctor.imageUrl,
+                  );
+
+                },
               ),
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                /////
-                ///// edit
+                // edit
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF1F2B6C),
@@ -128,13 +171,13 @@ class DoctorSelectionPage extends StatelessWidget {
     );
   }
 }
-
 class DoctorCard extends StatelessWidget {
   final String name;
   final String specialty;
   final double rating;
   final int reviews;
   final String imageUrl;
+  final VoidCallback onTap;
 
   DoctorCard({
     required this.name,
@@ -142,11 +185,14 @@ class DoctorCard extends StatelessWidget {
     required this.rating,
     required this.reviews,
     required this.imageUrl,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return GestureDetector(
+        onTap: onTap,
+        child: Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
@@ -158,7 +204,7 @@ class DoctorCard extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 30,
-              backgroundImage: AssetImage(imageUrl),
+              backgroundImage: NetworkImage(imageUrl),
             ),
             SizedBox(height: 8),
             Text(
@@ -192,6 +238,7 @@ class DoctorCard extends StatelessWidget {
           ],
         ),
       ),
+        ),
     );
   }
 }
