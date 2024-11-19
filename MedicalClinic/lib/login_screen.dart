@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'signup_screen.dart';  // Import the SignUpScreen
-import 'home_screen.dart';  // Import the HomeScreen
+import 'package:provider/provider.dart';
+import 'home_screen.dart'; // Import HomeScreen
+import 'api_service.dart'; // Import ApiService
+import 'token_provider.dart'; // Import TokenProvider
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -8,32 +10,60 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // Sample credentials
-  final String correctPhone = '0942322419';
-  final String correctPassword = '170302';
-
   Color primaryColor = Color(0xFF1F2B6C);
-  bool _obscurePassword = true;  // State to toggle password visibility
+  bool _obscurePassword = true;
+  bool _isLoading = false;
 
-  // Login logic
-  void _login(BuildContext context) {
-    String email = _phoneController.text;
-    String password = _passwordController.text;
+  void _login() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
 
-    if (email == correctPhone && password == correctPassword) {
-      // Navigate to HomeScreen if credentials are correct
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-      );
-    } else {
-      // Show an error message if credentials are incorrect
+    if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Invalid phone or password')),
+        SnackBar(content: Text('Vui lòng nhập đầy đủ thông tin')),
       );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Gọi API đăng nhập
+      final response = await ApiService.login(email, password);
+
+      // Kiểm tra phản hồi từ API
+      if (response.containsKey('access')) {
+        // Lưu token vào Provider
+        Provider.of<TokenProvider>(context, listen: false)
+            .setToken(response['access']);
+
+        // Điều hướng tới HomeScreen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(),
+          ),
+        );
+      } else if (response.containsKey('message')) {
+        // Xử lý khi API trả về lỗi
+        throw Exception(response['message']);
+      } else {
+        throw Exception('Phản hồi không hợp lệ từ server');
+      }
+    } catch (e) {
+      // Hiển thị thông báo lỗi
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Đăng nhập thất bại: $e')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -68,80 +98,60 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   SizedBox(height: 30),
-                  Container(
-                    height: 250,
-                    child: Image.asset(
-                      'assets/img1.png',
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  // Phone Field - only allows number input
+                  // Email Field
                   TextField(
-                    controller: _phoneController,
-                    keyboardType: TextInputType.number,  // Chỉ cho phép nhập số
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      labelText: 'Số điện thoại',
+                      labelText: 'Email',
                       border: OutlineInputBorder(),
                     ),
                   ),
                   SizedBox(height: 10),
-                  // Password Field - with visibility toggle
+                  // Password Field
                   TextField(
                     controller: _passwordController,
-                    obscureText: _obscurePassword,  // Bật tắt che mật khẩu
+                    obscureText: _obscurePassword,
                     decoration: InputDecoration(
                       labelText: 'Mật khẩu',
                       border: OutlineInputBorder(),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _obscurePassword
-                              ? Icons.visibility_off  // Biểu tượng khi che mật khẩu
-                              : Icons.visibility,     // Biểu tượng khi hiển thị mật khẩu
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                         ),
                         onPressed: () {
                           setState(() {
-                            _obscurePassword = !_obscurePassword;  // Bật tắt hiển thị mật khẩu
+                            _obscurePassword = !_obscurePassword;
                           });
                         },
                       ),
                     ),
                   ),
                   SizedBox(height: 20),
+                  // Login Button
                   SizedBox(
-                    width: 350,  // Chiều rộng tùy chỉnh
-                    height: 55,  // Chiều cao tùy chỉnh
+                    width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        _login(context);  // Xử lý logic đăng nhập
-                      },
+                      onPressed: _isLoading ? null : _login,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: Text(
+                      child: _isLoading
+                          ? CircularProgressIndicator(
+                        color: Colors.white,
+                      )
+                          : Text(
                         'Đăng nhập',
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.white,
                         ),
                       ),
-                    ),
-                  ),
-                  SizedBox(height: 15),
-                  GestureDetector(
-                    onTap: () {
-                      // Navigate to Sign Up Screen
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SignUpScreen()),
-                      );
-                    },
-                    child: Text(
-                      'Chưa có tài khoản? Đăng ký',
-                      style: TextStyle(color: primaryColor),
                     ),
                   ),
                 ],
