@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => TokenProvider(),
       child: MaterialApp(
-        home: LoginScreen(),
+        home: WelcomeScreen(),
         debugShowCheckedModeBanner: false,
       ),
     );
