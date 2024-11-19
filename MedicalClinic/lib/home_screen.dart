@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'token_provider.dart';
 import 'personal_screen.dart';
 import 'online_consultant.dart';
 import 'medical_history.dart';
 import 'appointment_overall.dart';
+
 class HomeScreen extends StatelessWidget {
-  Color primaryColor = Color(0xFF1F2B6C);
   @override
   Widget build(BuildContext context) {
+    // Lấy token từ Provider
+    final token = Provider.of<TokenProvider>(context).token;
+
+    Color primaryColor = Color(0xFF1F2B6C);
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            SizedBox(height: 60), // Khoảng cách phía trên dòng "Xin chào Huy Đỗ"
+            SizedBox(height: 60),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -22,11 +29,11 @@ class HomeScreen extends StatelessWidget {
                 ),
                 CircleAvatar(
                   radius: 25,
-                  backgroundImage: AssetImage('assets/avatar.png'), // Thay thế bằng đường dẫn ảnh avatar đúng
+                  backgroundImage: AssetImage('assets/avatar.png'),
                 ),
               ],
             ),
-            SizedBox(height: 30),
+            SizedBox(height: 20),
             Expanded(
               child: ListView(
                 children: [
@@ -113,7 +120,6 @@ class HomeScreen extends StatelessWidget {
                   ),
                 );
               }
-
               if (title == 'Đặt lịch khám') {
                 Navigator.push(
                   context,
