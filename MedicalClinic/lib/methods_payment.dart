@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'provision.dart';
 import 'credit_card.dart';
+import 'booking_schedule.dart';
 void main() {
   runApp(MyApp());
 }
@@ -39,7 +40,7 @@ class _MethodPaymentpageState extends State<MethodPaymentpage> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ProvisionPage()),
+              MaterialPageRoute(builder: (context) => SchedulePage()),
             );
           },
         ),
