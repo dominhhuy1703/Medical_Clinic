@@ -1,22 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'provision.dart';
-import 'methods_payment.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: SchedulePage(),
-    );
-  }
-}
+import 'doctor_selection.dart'; // Import lớp Doctor
+import 'methods_payment.dart'; // Import trang phương thức thanh toán
 
 class SchedulePage extends StatefulWidget {
+  final Doctor doctor;
+
+  SchedulePage({required this.doctor});
+
   @override
   _SchedulePageState createState() => _SchedulePageState();
 }
@@ -26,7 +17,7 @@ class _SchedulePageState extends State<SchedulePage> {
   TimeOfDay? selectedTime;
   final TextEditingController notesController = TextEditingController();
 
-  // pick dtae
+  // Chọn ngày
   Future<void> pickDate() async {
     DateTime? picked = await showDatePicker(
       context: context,
@@ -34,24 +25,24 @@ class _SchedulePageState extends State<SchedulePage> {
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
-
-    if (picked != null && picked != selectedDate)
+    if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
       });
+    }
   }
 
-  // pick time
+  // Chọn giờ
   Future<void> pickTime() async {
     TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
     );
-
-    if (picked != null && picked != selectedTime)
+    if (picked != null && picked != selectedTime) {
       setState(() {
         selectedTime = picked;
       });
+    }
   }
 
   void submitBooking() {
@@ -71,7 +62,15 @@ class _SchedulePageState extends State<SchedulePage> {
     );
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Đặt lịch thành công vào $dateTime")),
+      SnackBar(content: Text("Đặt lịch thành công vào $dateTime với ${widget.doctor.name}")),
+    );
+
+    // Chuyển sang màn hình phương thức thanh toán
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MethodPaymentpage(), // Gọi trang thanh toán
+      ),
     );
 
     clearForm();
@@ -93,15 +92,10 @@ class _SchedulePageState extends State<SchedulePage> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ProvisionPage()),
-            );
-          },
+          onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Đặt lịch khám',
+          'Đặt lịch khám với ${widget.doctor.name}',
           style: TextStyle(color: Color(0xFF1F2B6C), fontSize: 20),
         ),
         centerTitle: true,
@@ -111,6 +105,18 @@ class _SchedulePageState extends State<SchedulePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Thông tin bác sĩ
+            Text(
+              "Bác sĩ: ${widget.doctor.name}",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            Text(
+              "Chuyên khoa: ${widget.doctor.specialty ?? 'Không có thông tin'}",
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 16),
+
             // Chọn ngày
             TextButton(
               onPressed: pickDate,
@@ -122,6 +128,7 @@ class _SchedulePageState extends State<SchedulePage> {
               ),
             ),
             SizedBox(height: 16),
+
             // Chọn giờ
             TextButton(
               onPressed: pickTime,
@@ -133,6 +140,7 @@ class _SchedulePageState extends State<SchedulePage> {
               ),
             ),
             SizedBox(height: 16),
+
             // Ghi chú
             TextField(
               controller: notesController,
@@ -145,15 +153,10 @@ class _SchedulePageState extends State<SchedulePage> {
             ),
             Spacer(),
 
+            // Nút Đặt lịch
             Center(
               child: ElevatedButton(
-                onPressed: () {
-                  submitBooking();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MethodPaymentpage()),
-                  );
-                },
+                onPressed: submitBooking,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF1F2B6C),
                   shape: RoundedRectangleBorder(

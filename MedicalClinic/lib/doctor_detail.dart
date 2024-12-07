@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert'; // for json.decode
 import 'package:flutter/services.dart'; // for rootBundle
 import 'doctor_selection.dart';
+import 'booking_schedule.dart';
 
 class DoctorDetailPage extends StatefulWidget {
   final Doctor doctor;
@@ -173,7 +174,12 @@ class _DoctorDetailPageState extends State<DoctorDetailPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    // Edit action
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SchedulePage(doctor: widget.doctor),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF1F2B6C),
