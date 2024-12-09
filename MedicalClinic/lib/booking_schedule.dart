@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'provision.dart';
-
+import 'home_screen.dart';
 void main() {
   runApp(const MaterialApp(home: BookingPage()));
 }
@@ -31,7 +31,7 @@ class _BookingPageState extends State<BookingPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: primaryColor,
+        backgroundColor: Colors.white,
         title: const Text(
           'Đặt lịch khám',
           style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
@@ -40,7 +40,12 @@ class _BookingPageState extends State<BookingPage> {
         elevation: 4,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+            );
+          },
         ),
       ),
       body: SingleChildScrollView(

@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
     MedicalHistoryPage(),
     BookingPage(),
     PersonalScreen(),
-    // liên hệ
+
   ];
 
   void _onItemTapped(int index) {
@@ -49,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Color primaryColor = Color(0xFF1F2B6C);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -67,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// Home Page
+
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -104,7 +105,7 @@ class HomePage extends StatelessWidget {
           ),
           SizedBox(height: 20),
           Text(
-            'Tin tức Blog',
+            'Tin tức ',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           Expanded(

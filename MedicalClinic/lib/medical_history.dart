@@ -21,10 +21,12 @@ class MedicalHistoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          'Danh Sách Lịch Khám Bệnh',
+          'Lịch sử khám bệnh',
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
@@ -33,8 +35,10 @@ class MedicalHistoryPage extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            // Handle back action
-            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+            );
           },
         ),
       ),

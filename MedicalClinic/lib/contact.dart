@@ -32,14 +32,7 @@ class ContactPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Emergency Contact Title
-              Text(
-                'Khẩn Cấp',
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.red,
-                ),
-              ),
+
               SizedBox(height: 20),
 
               // Emergency Phone Number
