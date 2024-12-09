@@ -1,178 +1,218 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'doctor_selection.dart'; // Import lớp Doctor
-import 'methods_payment.dart'; // Import trang phương thức thanh toán
+import 'provision.dart';
 
-class SchedulePage extends StatefulWidget {
-  final Doctor doctor;
-
-  SchedulePage({required this.doctor});
-
-  @override
-  _SchedulePageState createState() => _SchedulePageState();
+void main() {
+  runApp(const MaterialApp(home: BookingPage()));
 }
 
-class _SchedulePageState extends State<SchedulePage> {
-  DateTime? selectedDate;
-  TimeOfDay? selectedTime;
-  final TextEditingController notesController = TextEditingController();
+class BookingPage extends StatefulWidget {
+  const BookingPage({Key? key}) : super(key: key);
 
-  // Chọn ngày
-  Future<void> pickDate() async {
-    DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-      });
-    }
-  }
+  @override
+  _BookingPageState createState() => _BookingPageState();
+}
 
-  // Chọn giờ
-  Future<void> pickTime() async {
-    TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-    if (picked != null && picked != selectedTime) {
-      setState(() {
-        selectedTime = picked;
-      });
-    }
-  }
+class _BookingPageState extends State<BookingPage> {
+  final _formKey = GlobalKey<FormState>();
 
-  void submitBooking() {
-    if (selectedDate == null || selectedTime == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Vui lòng điền đầy đủ thông tin")),
-      );
-      return;
-    }
+  String? selectedGender;
+  String? selectedDepartment;
+  String? selectedDoctor;
+  int consultationFee = 0;
 
-    final dateTime = DateTime(
-      selectedDate!.year,
-      selectedDate!.month,
-      selectedDate!.day,
-      selectedTime!.hour,
-      selectedTime!.minute,
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Đặt lịch thành công vào $dateTime với ${widget.doctor.name}")),
-    );
-
-    // Chuyển sang màn hình phương thức thanh toán
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MethodPaymentpage(), // Gọi trang thanh toán
-      ),
-    );
-
-    clearForm();
-  }
-
-  void clearForm() {
-    setState(() {
-      selectedDate = null;
-      selectedTime = null;
-      notesController.clear();
-    });
-  }
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    const primaryColor = Color(0xFF1F2B6C);
+
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'Đặt lịch khám với ${widget.doctor.name}',
-          style: TextStyle(color: Color(0xFF1F2B6C), fontSize: 20),
+        backgroundColor: primaryColor,
+        title: const Text(
+          'Đặt lịch khám',
+          style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Thông tin bác sĩ
-            Text(
-              "Bác sĩ: ${widget.doctor.name}",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Text(
-              "Chuyên khoa: ${widget.doctor.specialty ?? 'Không có thông tin'}",
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 16),
-
-            // Chọn ngày
-            TextButton(
-              onPressed: pickDate,
-              child: Text(
-                selectedDate == null
-                    ? "Chọn ngày"
-                    : "Ngày: ${DateFormat('yyyy-MM-dd').format(selectedDate!)}",
-                style: TextStyle(fontSize: 16, color: Color(0xFF1F2B6C)),
-              ),
-            ),
-            SizedBox(height: 16),
-
-            // Chọn giờ
-            TextButton(
-              onPressed: pickTime,
-              child: Text(
-                selectedTime == null
-                    ? "Chọn giờ"
-                    : "Giờ: ${selectedTime!.format(context)}",
-                style: TextStyle(fontSize: 16, color: Color(0xFF1F2B6C)),
-              ),
-            ),
-            SizedBox(height: 16),
-
-            // Ghi chú
-            TextField(
-              controller: notesController,
-              decoration: InputDecoration(
-                labelText: "Ghi chú (tùy chọn)",
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-              ),
-              maxLines: 3,
-            ),
-            Spacer(),
-
-            // Nút Đặt lịch
-            Center(
-              child: ElevatedButton(
-                onPressed: submitBooking,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF1F2B6C),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 100, vertical: 15),
-                ),
-                child: Text(
-                  'Đặt lịch',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
-              ),
-            ),
-          ],
+        elevation: 4,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Hãy điền các thông tin ',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: primaryColor),
+                ),
+                const SizedBox(height: 16),
+                _buildTextField(
+                  controller: nameController,
+                  label: 'Tên',
+                  hint: 'Nhập tên của bạn',
+                ),
+                const SizedBox(height: 12),
+                _buildTextField(
+                  controller: emailController,
+                  label: 'Email',
+                  hint: 'Nhập email',
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                const SizedBox(height: 12),
+                _buildTextField(
+                  controller: phoneController,
+                  label: 'Số điện thoại',
+                  hint: 'Nhập số điện thoại',
+                  keyboardType: TextInputType.phone,
+                ),
+
+
+                const SizedBox(height: 12),
+                _buildDropdown(
+                  label: 'Giới tính',
+                  items: [''],
+                  value: selectedGender,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedGender = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildDropdown(
+                        label: 'Khoa',
+                        items: [],
+                        value: selectedDepartment,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedDepartment = value;
+                          });
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _buildDropdown(
+                        label: 'Bác sĩ',
+                        items: [],
+                        value: selectedDoctor,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedDoctor = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Giá khám: $consultationFee VNĐ',
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.red),
+                ),
+                const SizedBox(height: 16),
+                Center(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 36),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      backgroundColor: primaryColor,
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProvisionPage(),
+                          ),
+                        );
+                      }
+                    },
+                    child: const Text(
+                      'Đặt Lịch',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white, // Correct placement of color property
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required String label,
+    String? hint,
+    TextEditingController? controller,
+    TextInputType keyboardType = TextInputType.text,
+    int maxLines = 1,
+  }) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      maxLines: maxLines,
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        filled: true,
+        fillColor: const Color(0xFFF3F4F6),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Vui lòng nhập $label';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _buildDropdown({
+    required String label,
+    required List<String> items,
+    String? value,
+    void Function(String?)? onChanged,
+  }) {
+    return DropdownButtonFormField<String>(
+      decoration: InputDecoration(
+        labelText: label,
+        filled: true,
+        fillColor: const Color(0xFFF3F4F6),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      value: value,
+      items: items.map((String item) {
+        return DropdownMenuItem<String>(
+          value: item,
+          child: Text(item),
+        );
+      }).toList(),
+      onChanged: onChanged,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Vui lòng chọn $label';
+        }
+        return null;
+      },
     );
   }
 }

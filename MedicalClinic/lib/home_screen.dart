@@ -1,136 +1,127 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'token_provider.dart';
-import 'personal_screen.dart';
-import 'online_consultant.dart';
+import 'booking_schedule.dart';
 import 'medical_history.dart';
-import 'appointment_overall.dart';
+import 'personal_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Lấy token từ Provider
-    final token = Provider.of<TokenProvider>(context).token;
-
-    Color primaryColor = Color(0xFF1F2B6C);
-
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            SizedBox(height: 60),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '👋 Xin chào Huy Đỗ',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                ),
-                CircleAvatar(
-                  radius: 25,
-                  backgroundImage: AssetImage('assets/avatar.png'),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: ListView(
-                children: [
-                  _buildHomeTile(
-                    context,
-                    'Thông tin cá nhân',
-                    'assets/personal_info.png',
-                  ),
-                  _buildHomeTile(
-                    context,
-                    'Đặt lịch khám',
-                    'assets/appointment.png',
-                  ),
-                  _buildHomeTile(
-                    context,
-                    'Chỉ số sức khỏe',
-                    'assets/health_metrics.png',
-                  ),
-                  _buildHomeTile(
-                    context,
-                    'Lịch sử khám',
-                    'assets/medical_history.png',
-                  ),
-                  _buildHomeTile(
-                    context,
-                    'Tư vấn online',
-                    'assets/online_consult.png',
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Chỉ số'),
-          BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: 'Lịch sử'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Cài đặt'),
-        ],
-        selectedItemColor: primaryColor,
-        unselectedItemColor: Colors.grey,
+    return ChangeNotifierProvider(
+      create: (_) => TokenProvider(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: HomeScreen(),
       ),
     );
   }
+}
 
-  Widget _buildHomeTile(BuildContext context, String title, String imagePath) {
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _pages = [
+    HomePage(),
+    MedicalHistoryPage(),
+    BookingPage(),
+    PersonalScreen(),
+    // liên hệ
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Color primaryColor = Color(0xFF1F2B6C);
+
+    return Scaffold(
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: primaryColor,
+        unselectedItemColor: Colors.grey,
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Trang chủ'),
+          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Lịch sử khám'),
+          BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: 'Đặt lịch'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Cá nhân'),
+        ],
+      ),
+    );
+  }
+}
+
+// Home Page
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    Color primaryColor = Color(0xFF1F2B6C);
+
+    //
+    List<Map<String, String>> blogs = [
+      {'title': '5 mẹo chăm sóc sức khỏe', 'content': 'Khám phá cách giữ sức khỏe hàng ngày.'},
+      {'title': 'Lợi ích của việc khám sức khỏe định kỳ', 'content': 'Tại sao nên khám định kỳ?'},
+      {'title': 'Dinh dưỡng hợp lý', 'content': 'Thực đơn lành mạnh cho bạn và gia đình.'},
+    ];
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Card(
-        elevation: 3,
-        child: Container(
-          height: 70,
-          child: ListTile(
-            contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
-            leading: Image.asset(imagePath, width: 50, height: 50),
-            title: Text(
-              title,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-            ),
-            onTap: () {
-              if (title == 'Thông tin cá nhân') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PersonalScreen(),
-                  ),
-                );
-              }
-              if (title == 'Tư vấn online') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => OnlineConsultationPage(),
-                  ),
-                );
-              }
-              if (title == 'Lịch sử khám') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MedicalHistoryPage(),
-                  ),
-                );
-              }
-              if (title == 'Đặt lịch khám') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AppointmentPage(),
-                  ),
-                );
-              }
-            },
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '👋 Xin chào',
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: primaryColor,
+                ),
+              ),
+              CircleAvatar(
+                radius: 25,
+                backgroundImage: AssetImage('assets/avatar.png'),
+              ),
+            ],
           ),
-        ),
+          SizedBox(height: 20),
+          Text(
+            'Tin tức Blog',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: blogs.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  margin: EdgeInsets.symmetric(vertical: 10),
+                  child: ListTile(
+                    title: Text(blogs[index]['title'] ?? ''),
+                    subtitle: Text(blogs[index]['content'] ?? ''),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
