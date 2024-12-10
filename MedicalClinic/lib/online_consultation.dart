@@ -81,6 +81,7 @@ class _OnlineConsultationScreenState extends State<OnlineConsultationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           'Tư vấn trực tuyến',

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'token_provider.dart';
+import 'home_screen.dart';
 
 class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
           'Thông tin cá nhân',
@@ -16,7 +18,10 @@ class ProfilePage extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+            );
           },
         ),
       ),
@@ -47,6 +52,7 @@ class ProfilePage extends StatelessWidget {
                   context,
                   icon: Icons.folder,
                   title: 'Hồ sơ bệnh án',
+                  route: '/medical_records',
                 ),
                 _buildMenuItem(
                   context,

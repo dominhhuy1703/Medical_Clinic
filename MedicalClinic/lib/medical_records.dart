@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
+import 'profile.dart';
+import 'medical_records_detail.dart';
 
-void main() {
-  runApp(MaterialApp(
-    home: MedicalRecordsPage(),
-  ));
-}
 
 class MedicalRecordsPage extends StatelessWidget {
   static const Color primaryColor = Color(0xFF1F2B6C);
@@ -12,6 +9,7 @@ class MedicalRecordsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
           "Hồ Sơ Bệnh Án",
@@ -21,170 +19,127 @@ class MedicalRecordsPage extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => ProfilePage()),
+            );
           },
         ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        scrollDirection: Axis.horizontal, // cuộn ngang nếu cần
-        child: DataTable(
-          headingRowColor: MaterialStateProperty.resolveWith(
-                (states) => primaryColor,
-          ),
-          columns: const [
-            DataColumn(
-              label: Text(
-                'Mã Hồ Sơ',
-                style: TextStyle(color: Colors.white),
-              ),
+        child: Column(
+          children: [
+            _buildMedicalRecordCard(
+              context,
+              recordId: 6,
+              diagnosis: "Viêm phổi",
+              treatmentPlan: "Kháng sinh, nghỉ ngơi",
+              medication: "Amoxicillin",
+              startDate: "01/12/2024",
+              endDate: "07/12/2024",
+              notes: "Cần theo dõi chặt chẽ",
+              doctor: "Dr. Nguyễn Văn A",
             ),
-            DataColumn(
-              label: Text(
-                'Bệnh (Chẩn đoán)',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            DataColumn(
-              label: Text(
-                'Ngày Hẹn',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            DataColumn(
-              label: Text(
-                'Bác Sĩ',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            DataColumn(
-              label: Text(
-                'Hành Động',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ],
-          rows: [
-            DataRow(cells: [
-              const DataCell(Text('')),
-              const DataCell(Text('')),
-              const DataCell(Text('')),
-              const DataCell(Text('')),
-              DataCell(
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailPage(
-                          recordId: 6,
-                          diagnosis: "",
-                          treatmentPlan: "",
-                          medication: "",
-                          startDate: "",
-                          endDate: "",
-                          notes: "",
-                          doctor: "",
-                        ),
-                      ),
-                    );
-                  },
-                  child: const Text('Xem chi tiết'),
-                ),
-              ),
-            ]),
           ],
         ),
       ),
     );
   }
-}
 
-class DetailPage extends StatelessWidget {
-  final int recordId;
-  final String diagnosis;
-  final String treatmentPlan;
-  final String medication;
-  final String startDate;
-  final String endDate;
-  final String notes;
-  final String doctor;
-
-  const DetailPage({
-    required this.recordId,
-    required this.diagnosis,
-    required this.treatmentPlan,
-    required this.medication,
-    required this.startDate,
-    required this.endDate,
-    required this.notes,
-    required this.doctor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Chi Tiết Hồ Sơ"),
-        backgroundColor: Color(0xFF1F2B6C)
-        ,
+  Widget _buildMedicalRecordCard(
+      BuildContext context, {
+        required int recordId,
+        required String diagnosis,
+        required String treatmentPlan,
+        required String medication,
+        required String startDate,
+        required String endDate,
+        required String notes,
+        required String doctor,
+      }) {
+    return Card(
+      elevation: 5.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
       ),
-      body: SingleChildScrollView(
+      child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Card(
-          elevation: 4.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Hồ sơ bệnh án #$recordId",
-                  style: const TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1F2B6C)
-                    ,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Hồ sơ bệnh án #$recordId",
+              style: const TextStyle(
+                fontSize: 22.0,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF1F2B6C),
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            _buildDetailRow("Chẩn đoán", diagnosis),
+            _buildDetailRow("Ngày hẹn", startDate),
+            _buildDetailRow("Bác sĩ", doctor),
+
+            Container(
+              color: Colors.white,
+              child: const SizedBox(height: 16.0),
+            ),
+            Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 50.0), // Increased horizontal padding
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
                   ),
                 ),
-                const SizedBox(height: 16.0),
-                _buildRow("Chẩn đoán", diagnosis),
-                _buildRow("Phác đồ điều trị", treatmentPlan),
-                _buildRow("Đơn thuốc", medication),
-                _buildRow("Ngày bắt đầu", startDate),
-                _buildRow("Ngày kết thúc", endDate),
-                _buildRow("Ghi chú", notes),
-                _buildRow("Bác sĩ", doctor),
-                const SizedBox(height: 16.0),
-
-              ],
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetailPage(
+                        recordId: recordId,
+                        diagnosis: diagnosis,
+                        treatmentPlan: treatmentPlan,
+                        medication: medication,
+                        startDate: startDate,
+                        endDate: endDate,
+                        notes: notes,
+                        doctor: doctor,
+                      ),
+                    ),
+                  );
+                },
+                child: const Text(
+                  'Xem chi tiết',
+                  style: TextStyle(fontSize: 18.0, color: Colors.white), // White text color
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildRow(String label, String value) {
+  Widget _buildDetailRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            flex: 2,
-            child: Text(
-              label,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
+          Text(
+            "$label:",
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16.0,
+              color: Color(0xFF1F2B6C),
             ),
           ),
+          const SizedBox(width: 10),
           Expanded(
-            flex: 3,
-            child: Text(value),
+            child: Text(value, style: const TextStyle(fontSize: 16.0)),
           ),
         ],
       ),

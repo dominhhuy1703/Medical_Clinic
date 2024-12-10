@@ -13,6 +13,7 @@ import 'specialties_screen.dart';
 import 'profile.dart';
 import 'notifications.dart';
 import 'contact.dart';
+import 'medical_records.dart';
 
 void main() {
   runApp(MyApp());
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
           '/profile': (context) => ProfilePage(),
           '/notifications': (context) => NotificationsPage(),
           '/contact': (context) => ContactPage(),
+          '/medical_records': (context) => MedicalRecordsPage (),
         },
         debugShowCheckedModeBanner: false,
       ),

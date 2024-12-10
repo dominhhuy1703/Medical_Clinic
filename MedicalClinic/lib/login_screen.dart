@@ -93,9 +93,15 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+
+  void _navigateToForgotPassword() {
+    print(".");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
@@ -118,12 +124,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text(
                     'Đăng nhập',
                     style: TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
                       color: primaryColor,
                     ),
+                    textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 30),
+                  SizedBox(height: 20),
                   // Email Field
                   TextField(
                     controller: _emailController,
@@ -177,6 +184,18 @@ class _LoginScreenState extends State<LoginScreen> {
                           fontSize: 18,
                           color: Colors.white,
                         ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  // forgot pw
+                  TextButton(
+                    onPressed: _navigateToForgotPassword,
+                    child: Text(
+                      'Quên mật khẩu?',
+                      style: TextStyle(
+                        color: primaryColor,
+                        fontSize: 16,
                       ),
                     ),
                   ),

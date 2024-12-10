@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'token_provider.dart';
+import 'notifications.dart';
+import 'profile.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -10,6 +12,13 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
+  // List of pages corresponding to each tab
+  final List<Widget> _pages = [
+    HomePage(),
+    NotificationsPage(),
+    ProfilePage(),
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -17,70 +26,44 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     final token = Provider.of<TokenProvider>(context).token;
 
     Color primaryColor = Color(0xFF1F2B6C);
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
+      backgroundColor: Colors.white,
+      appBar: _selectedIndex == 0
+          ? AppBar(
+        backgroundColor: Colors.white,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(height: 60),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '👋 Xin chào!',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                ),
-                CircleAvatar(
-                  radius: 25,
-                  backgroundImage: AssetImage('assets/avatar.png'),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: ListView(
-                children: [
-                  _buildHomeTile(
-                    context,
-                    'Thông tin cá nhân',
-                    'assets/personal_info.png',
-                    '/personal_info',
-                  ),
-                  _buildHomeTile(
-                    context,
-                    'Đặt lịch khám',
-                    'assets/appointment.png',
-                    '/appointment',
-                  ),
-                  _buildHomeTile(
-                    context,
-                    'Dịch vụ phòng khám',
-                    'assets/health_metrics.png',
-                    '/service',
-                  ),
-                  _buildHomeTile(
-                    context,
-                    'Chuyên khoa',
-                    'assets/medical_history.png',
-                    '/specialties',
-                  ),
-                  _buildHomeTile(
-                    context,
-                    'Tư vấn online',
-                    'assets/online_consult.png',
-                    '/online_consult',
-                  ),
-                ],
-              ),
+            Text(
+              '👋 Xin chào!',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ],
         ),
-      ),
+        actions: [
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, '/profile');
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CircleAvatar(
+                radius: 20,
+                backgroundImage: AssetImage('assets/avatar.png'),
+              ),
+            ),
+          ),
+        ],
+      )
+          : null, // No AppBar for other pages (index 1 and 2)
+      body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[
@@ -105,17 +88,50 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+}
 
-    switch (index) {
-      case 0:
-        break;
-      case 1:
-        Navigator.pushNamed(context, '/notifications');
-        break;
-      case 2:
-        Navigator.pushNamed(context, '/profile');
-        break;
-    }
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
+        children: [
+          SizedBox(height: 60),
+          Expanded(
+            child: ListView(
+              children: [
+                _buildHomeTile(
+                  context,
+                  'Đặt lịch khám',
+                  'assets/appointment.png',
+                  '/appointment',
+                ),
+                _buildHomeTile(
+                  context,
+                  'Dịch vụ phòng khám',
+                  'assets/health_metrics.png',
+                  '/service',
+                ),
+                _buildHomeTile(
+                  context,
+                  'Chuyên khoa',
+                  'assets/medical_history.png',
+                  '/specialties',
+                ),
+                _buildHomeTile(
+                  context,
+                  'Tư vấn online',
+                  'assets/online_consult.png',
+                  '/online_consult',
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildHomeTile(BuildContext context, String title, String imagePath, String route) {

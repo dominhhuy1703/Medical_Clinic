@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart';
+import 'profile.dart';
 
-void main() {
-  runApp(MyApp());
-}
+
 
 class MyApp extends StatelessWidget {
   @override
@@ -37,7 +35,7 @@ class MedicalHistoryPage extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => HomeScreen()),
+              MaterialPageRoute(builder: (context) => ProfilePage()),
             );
           },
         ),
@@ -46,7 +44,6 @@ class MedicalHistoryPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Header row
             Container(
               padding: EdgeInsets.symmetric(vertical: 12.0),
               color: Color(0xFF1F2B6C),
@@ -88,7 +85,7 @@ class MedicalHistoryPage extends StatelessWidget {
                 ],
               ),
             ),
-            // List of appointments
+
             Expanded(
               child: ListView.separated(
                 itemCount: appointments.length,
