@@ -35,7 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
     MedicalHistoryPage(),
     BookingPage(),
     PersonalScreen(),
-
   ];
 
   void _onItemTapped(int index) {
@@ -52,6 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.white,
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
         type: BottomNavigationBarType.fixed,
         selectedItemColor: primaryColor,
         unselectedItemColor: Colors.grey,
@@ -68,61 +68,95 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     Color primaryColor = Color(0xFF1F2B6C);
 
-    //
-    List<Map<String, String>> blogs = [
-      {'title': '5 mẹo chăm sóc sức khỏe', 'content': 'Khám phá cách giữ sức khỏe hàng ngày.'},
-      {'title': 'Lợi ích của việc khám sức khỏe định kỳ', 'content': 'Tại sao nên khám định kỳ?'},
-      {'title': 'Dinh dưỡng hợp lý', 'content': 'Thực đơn lành mạnh cho bạn và gia đình.'},
+    final List<Map<String, String>> services = [
+      {'title': '5 mẹo mỗi ngày\nđể giúp khoẻ mạnh hơn', 'image': 'assets/tips5_news.png'},
+      {'title': 'Thực đơn lành\nmạnh cho bạn và gia đình', 'image': 'assets/food.png'},
+      {'title': 'Các loại thực\nphẩm giúp trẻ mau lớn', 'image': 'assets/children.png'},
+      {'title': 'Không nên bỏ\nqua buổi sáng', 'image': 'assets/breakfast.png'},
     ];
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 30.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '👋 Xin chào',
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: primaryColor,
-                ),
-              ),
-              CircleAvatar(
-                radius: 25,
-                backgroundImage: AssetImage('assets/avatar.png'),
-              ),
-            ],
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 1,
+        title: Text(
+          'Meddical',
+          style: TextStyle(
+            color: primaryColor,
+            fontSize: 26,
+            fontWeight: FontWeight.bold,
           ),
-          SizedBox(height: 20),
-          Text(
-            'Tin tức ',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: blogs.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  margin: EdgeInsets.symmetric(vertical: 10),
-                  child: ListTile(
-                    title: Text(blogs[index]['title'] ?? ''),
-                    subtitle: Text(blogs[index]['content'] ?? ''),
-                  ),
-                );
-              },
+        ),
+        centerTitle: true,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: CircleAvatar(
+              radius: 20,
+              backgroundImage: AssetImage('assets/avatar.png'),
             ),
           ),
         ],
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Tin tức
+              Text(
+                'Tin tức',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10),
+              SizedBox(
+                height: 200,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: services.length,
+                  itemBuilder: (context, index) {
+                    final service = services[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 150,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              image: DecorationImage(
+                                image: AssetImage(service['image']!),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            service['title']!,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+              // Add more widgets here
+            ],
+          ),
+        ),
       ),
     );
   }

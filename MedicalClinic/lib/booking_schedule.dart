@@ -31,7 +31,7 @@ class _BookingPageState extends State<BookingPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xFF1F2B6C),
         title: const Text(
           'Đặt lịch khám',
           style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),

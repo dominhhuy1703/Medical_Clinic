@@ -11,11 +11,11 @@ class PersonalScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xFF1F2B6C),
         title: Text(
           'Thông tin cá nhân',
           style: TextStyle(
-            color: Color(0xFF1F2B6C),
+            color: Colors.white,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
