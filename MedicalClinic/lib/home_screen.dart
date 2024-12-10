@@ -1,26 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'token_provider.dart';
-import 'booking_schedule.dart';
-import 'medical_history.dart';
-import 'personal_screen.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => TokenProvider(),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: HomeScreen(),
-      ),
-    );
-  }
-}
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -30,131 +10,131 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [
-    HomePage(),
-    MedicalHistoryPage(),
-    BookingPage(),
-    PersonalScreen(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final token = Provider.of<TokenProvider>(context).token;
+
+    Color primaryColor = Color(0xFF1F2B6C);
+
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            SizedBox(height: 60),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '👋 Xin chào!',
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                ),
+                CircleAvatar(
+                  radius: 25,
+                  backgroundImage: AssetImage('assets/avatar.png'),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            Expanded(
+              child: ListView(
+                children: [
+                  _buildHomeTile(
+                    context,
+                    'Thông tin cá nhân',
+                    'assets/personal_info.png',
+                    '/personal_info',
+                  ),
+                  _buildHomeTile(
+                    context,
+                    'Đặt lịch khám',
+                    'assets/appointment.png',
+                    '/appointment',
+                  ),
+                  _buildHomeTile(
+                    context,
+                    'Dịch vụ phòng khám',
+                    'assets/health_metrics.png',
+                    '/service',
+                  ),
+                  _buildHomeTile(
+                    context,
+                    'Chuyên khoa',
+                    'assets/medical_history.png',
+                    '/specialties',
+                  ),
+                  _buildHomeTile(
+                    context,
+                    'Tư vấn online',
+                    'assets/online_consult.png',
+                    '/online_consult',
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Trang chủ',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications),
+            label: 'Thông báo',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle),
+            label: 'Người dùng',
+          ),
+        ],
+      ),
+    );
+  }
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+
+    switch (index) {
+      case 0:
+        break;
+      case 1:
+        Navigator.pushNamed(context, '/notifications');
+        break;
+      case 2:
+        Navigator.pushNamed(context, '/profile');
+        break;
+    }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    Color primaryColor = Color(0xFF1F2B6C);
-
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: primaryColor,
-        unselectedItemColor: Colors.grey,
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Trang chủ'),
-          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Lịch sử khám'),
-          BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: 'Đặt lịch'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Cá nhân'),
-        ],
-      ),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-
-    Color primaryColor = Color(0xFF1F2B6C);
-
-    final List<Map<String, String>> services = [
-      {'title': '5 mẹo mỗi ngày\nđể giúp khoẻ mạnh hơn', 'image': 'assets/tips5_news.png'},
-      {'title': 'Thực đơn lành\nmạnh cho bạn và gia đình', 'image': 'assets/food.png'},
-      {'title': 'Các loại thực\nphẩm giúp trẻ mau lớn', 'image': 'assets/children.png'},
-      {'title': 'Không nên bỏ\nqua buổi sáng', 'image': 'assets/breakfast.png'},
-    ];
-
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 1,
-        title: Text(
-          'Meddical',
-          style: TextStyle(
-            color: primaryColor,
-            fontSize: 26,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: CircleAvatar(
-              radius: 20,
-              backgroundImage: AssetImage('assets/avatar.png'),
+  Widget _buildHomeTile(BuildContext context, String title, String imagePath, String route) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Card(
+        elevation: 3,
+        child: Container(
+          height: 70,
+          child: ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
+            leading: Image.asset(imagePath, width: 50, height: 50),
+            title: Text(
+              title,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
             ),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Tin tức
-              Text(
-                'Tin tức',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              SizedBox(
-                height: 200,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: services.length,
-                  itemBuilder: (context, index) {
-                    final service = services[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 150,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              image: DecorationImage(
-                                image: AssetImage(service['image']!),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            service['title']!,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
-              // Add more widgets here
-            ],
+            onTap: () {
+              Navigator.pushNamed(context, route);
+            },
           ),
         ),
       ),

@@ -4,6 +4,15 @@ import 'login_screen.dart';
 import 'signup_screen.dart';
 import 'token_provider.dart';
 import 'success_screen.dart';
+import 'booking_schedule.dart';
+import 'information_personal.dart';
+import 'medical_history.dart';
+import 'service_clinic.dart';
+import 'online_consultation.dart';
+import 'specialties_screen.dart';
+import 'profile.dart';
+import 'notifications.dart';
+import 'contact.dart';
 
 void main() {
   runApp(MyApp());
@@ -21,6 +30,15 @@ class MyApp extends StatelessWidget {
           '/login': (context) => LoginScreen(),
           '/signup': (context) => SignUpScreen(),
           '/success_email': (context) => EmailVerifiedScreen(),
+          '/appointment':(context) => BookingPage(),
+          '/personal_info': (context) => UserInfoScreen(),
+          '/medical_history': (context) => MedicalHistoryPage(),
+          '/service': (context) => ServiceClinicScreen(),
+          '/online_consult': (context) => OnlineConsultationScreen(),
+          '/specialties': (context) => SpecialityScreen(),
+          '/profile': (context) => ProfilePage(),
+          '/notifications': (context) => NotificationsPage(),
+          '/contact': (context) => ContactPage(),
         },
         debugShowCheckedModeBanner: false,
       ),

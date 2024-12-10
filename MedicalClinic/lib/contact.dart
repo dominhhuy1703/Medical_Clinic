@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'personal_screen.dart';
 
 class ContactPage extends StatelessWidget {
-  // Define primary color for the app
   static const Color primaryColor = Color(0xFF1F2B6C);
 
   @override
@@ -21,7 +19,7 @@ class ContactPage extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white), // Corrected icon color
           onPressed: () {
-            Navigator.pop(context); // Navigate back to the previous screen
+            Navigator.pop(context);
           },
         ),
       ),
@@ -31,11 +29,9 @@ class ContactPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Emergency Contact Title
 
               SizedBox(height: 20),
 
-              // Emergency Phone Number
               _buildContactItem(
                 icon: FontAwesomeIcons.phone,
                 label: 'Khẩn cấp:',
@@ -43,7 +39,7 @@ class ContactPage extends StatelessWidget {
               ),
               SizedBox(height: 16),
 
-              // Address
+
               _buildContactItem(
                 icon: FontAwesomeIcons.mapMarkerAlt,
                 label: 'Địa chỉ:',
@@ -51,7 +47,6 @@ class ContactPage extends StatelessWidget {
               ),
               SizedBox(height: 16),
 
-              // Email Address
               _buildContactItem(
                 icon: FontAwesomeIcons.envelope,
                 label: 'Email:',
@@ -59,7 +54,6 @@ class ContactPage extends StatelessWidget {
               ),
               SizedBox(height: 16),
 
-              // Working Hours
               _buildContactItem(
                 icon: FontAwesomeIcons.clock,
                 label: 'Giờ làm việc:',
