@@ -15,6 +15,7 @@ import 'notifications.dart';
 import 'contact.dart';
 import 'medical_records.dart';
 
+
 void main() {
   runApp(MyApp());
 }
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
           '/contact': (context) => ContactPage(),
           '/medical_records': (context) => MedicalRecordsPage (),
         },
+
         debugShowCheckedModeBanner: false,
       ),
     );
@@ -99,6 +101,7 @@ class WelcomeScreen extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.pushNamed(context, '/signup');
+
                       },
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(horizontal: 100, vertical: 15),
@@ -123,6 +126,7 @@ class WelcomeScreen extends StatelessWidget {
                     child: OutlinedButton(
                       onPressed: () {
                         Navigator.pushNamed(context, '/login');
+
                       },
                       style: OutlinedButton.styleFrom(
                         padding: EdgeInsets.symmetric(horizontal: 100, vertical: 15),
@@ -150,3 +154,4 @@ class WelcomeScreen extends StatelessWidget {
     );
   }
 }
+

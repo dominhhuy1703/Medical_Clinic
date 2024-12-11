@@ -3,6 +3,7 @@ import 'profile.dart';
 
 
 
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
 class MedicalHistoryPage extends StatelessWidget {
   final List<Map<String, String>> appointments = [
     {"date": "1/12/2024", "time": "11:00", "status": "Scheduled"},
+
   ];
 
   @override

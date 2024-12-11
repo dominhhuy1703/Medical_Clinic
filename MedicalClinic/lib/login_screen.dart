@@ -5,6 +5,7 @@ import 'verify_code.dart';
 import 'package:medical_clinic/service/auth_repository.dart';
 import 'token_provider.dart';
 
+
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -25,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Vui lòng nhập đầy đủ thông tin')),
+
       );
       return;
     }
@@ -79,10 +81,12 @@ class _LoginScreenState extends State<LoginScreen> {
         } else {
           throw Exception(errorMessage);
         }
+
       } else {
         throw Exception('Phản hồi không hợp lệ từ server');
       }
     } catch (e) {
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Đăng nhập thất bại: $e')),
       );

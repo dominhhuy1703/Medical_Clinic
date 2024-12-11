@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 name: medical_clinic
+=======
+name: untitled
+>>>>>>> 788b6a9f2f2aef3a89e0c40c20e06a2ffa319258
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -33,6 +37,7 @@ dependencies:
   http: ^0.13.4
   provider: ^6.0.5
   intl: ^0.18.0
+<<<<<<< HEAD
   dio: ^5.0.0
   flutter_secure_storage: ^9.0.0
   fluttertoast: ^8.0.9
@@ -42,6 +47,8 @@ dependencies:
   shared_preferences: ^2.0.0
   font_awesome_flutter: ^10.1.0
   diacritic: ^0.1.6
+=======
+>>>>>>> 788b6a9f2f2aef3a89e0c40c20e06a2ffa319258
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -90,6 +97,7 @@ flutter:
     - assets/obstetrics_service_icon.png
     - assets/Pediatric_service_icon.png
     - assets/doctor1.png
+<<<<<<< HEAD
     - assets/children.png
     - assets/food.png
     - assets/tips5_news.png
@@ -102,6 +110,9 @@ flutter:
     - assets/doctor3.png
     - assets/doctor4.png
 
+=======
+    - assets/fakedata.json
+>>>>>>> 788b6a9f2f2aef3a89e0c40c20e06a2ffa319258
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

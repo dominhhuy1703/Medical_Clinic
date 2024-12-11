@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'token_provider.dart';
 import 'package:flutter/material.dart';
 
+
 class ApiService {
   static const String baseUrl = 'https://medical-clinic-api.vercel.app/api/v1';
 
@@ -20,6 +21,7 @@ class ApiService {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['access'] != null) {
+
           return {
             'status': 'success',
             'message': data['message'],
@@ -30,6 +32,7 @@ class ApiService {
           return {'status': 'error', 'message': 'Access token not found'};
         }
       } else {
+
         return {
           'status': 'error',
           'message': 'Failed to login: ${response.statusCode}',

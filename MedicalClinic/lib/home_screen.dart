@@ -27,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
 
+
     final token = Provider.of<TokenProvider>(context).token;
 
     Color primaryColor = Color(0xFF1F2B6C);
@@ -135,6 +136,7 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildHomeTile(BuildContext context, String title, String imagePath, String route) {
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Card(

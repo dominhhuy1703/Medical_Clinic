@@ -64,6 +64,7 @@ class DoctorDetailPage extends StatelessWidget {
               'Thời gian khám: Thứ 2 - Thứ 6, từ 9:00 AM đến 5:00 PM',
               style: TextStyle(fontSize: 18),
             ),
+
           ],
         ),
       ),
