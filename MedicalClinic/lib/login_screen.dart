@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'home_screen.dart'; // Import HomeScreen
-import 'api_service.dart'; // Import ApiService
-import 'token_provider.dart'; // Import TokenProvider
+import 'home_screen.dart';
+import 'verify_code.dart';
+import 'package:medical_clinic/service/auth_repository.dart';
+import 'token_provider.dart';
+
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -23,7 +25,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Vui lòng nhập đầy đủ thông tin')),
+        const SnackBar(content: Text('Vui lòng nhập đầy đủ thông tin')),
+
       );
       return;
     }
@@ -33,30 +36,57 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      // Gọi API đăng nhập
-      final response = await ApiService.login(email, password);
+      // Gọi AuthRepository để đăng nhập
+      final authRepository = AuthRepository();
+      final response = await authRepository.loginUser({
+        'email': email,
+        'password': password,
+      });
 
       // Kiểm tra phản hồi từ API
-      if (response.containsKey('access')) {
-        // Lưu token vào Provider
-        Provider.of<TokenProvider>(context, listen: false)
-            .setToken(response['access']);
+      if (response != null && response.containsKey('access')) {
+        final bool isSendCode = response['is_send_code'] ?? false;
 
-        // Điều hướng tới HomeScreen
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomeScreen(),
-          ),
-        );
-      } else if (response.containsKey('message')) {
-        // Xử lý khi API trả về lỗi
-        throw Exception(response['message']);
+        if (isSendCode) {
+          // Chuyển hướng đến trang xác minh mã
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => VerificationCodeScreen(email: email),
+            ),
+          );
+        } else {
+          // Lưu token và chuyển đến HomeScreen
+          Provider.of<TokenProvider>(context, listen: false)
+              .setToken(response['access']);
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomeScreen(),
+            ),
+          );
+        }
+      } else if (response != null && response.containsKey('message')) {
+        // Trường hợp server trả về message báo lỗi
+        final String errorMessage = response['message'];
+        if (errorMessage.contains("Send code verify")) {
+          // Chuyển tới trang xác minh nếu có thông báo gửi mã xác minh thành công
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => VerificationCodeScreen(email: email),
+            ),
+          );
+        } else {
+          throw Exception(errorMessage);
+        }
+
       } else {
         throw Exception('Phản hồi không hợp lệ từ server');
       }
     } catch (e) {
-      // Hiển thị thông báo lỗi
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Đăng nhập thất bại: $e')),
       );
@@ -67,9 +97,15 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+
+  void _navigateToForgotPassword() {
+    print(".");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
@@ -92,12 +128,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text(
                     'Đăng nhập',
                     style: TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
                       color: primaryColor,
                     ),
+                    textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 30),
+                  SizedBox(height: 20),
                   // Email Field
                   TextField(
                     controller: _emailController,
@@ -151,6 +188,18 @@ class _LoginScreenState extends State<LoginScreen> {
                           fontSize: 18,
                           color: Colors.white,
                         ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  // forgot pw
+                  TextButton(
+                    onPressed: _navigateToForgotPassword,
+                    child: Text(
+                      'Quên mật khẩu?',
+                      style: TextStyle(
+                        color: primaryColor,
+                        fontSize: 16,
                       ),
                     ),
                   ),

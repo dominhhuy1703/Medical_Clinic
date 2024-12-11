@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart';
-void main() {
-  runApp(MyApp());
-}
+import 'profile.dart';
+
+
+
 
 class MyApp extends StatelessWidget {
   @override
@@ -15,94 +15,131 @@ class MyApp extends StatelessWidget {
 
 class MedicalHistoryPage extends StatelessWidget {
   final List<Map<String, String>> appointments = [
-    {
-      'time': '15:30',
-      'date': '06/03/2024',
-      'room': 'Phòng khám: 202',
-      'doctor': 'Bác sĩ: NDK',
-      'specialty': 'Chuyên ngành: Tim',
-    },
-    {
-      'time': '11:30',
-      'date': '07/03/2024',
-      'room': 'Phòng khám: 202',
-      'doctor': 'Bác sĩ: NDK',
-      'specialty': 'Chuyên ngành: Tim',
-    },
-    {
-      'time': '11:30',
-      'date': '07/03/2024',
-      'room': 'Phòng khám: 202',
-      'doctor': 'Bác sĩ: NDK',
-      'specialty': 'Chuyên ngành: Tim',
-    },
-    {
-      'time': '11:30',
-      'date': '07/03/2024',
-      'room': 'Phòng khám: 202',
-      'doctor': 'Bác sĩ: NDK',
-      'specialty': 'Chuyên ngành: Tim',
-    },
+    {"date": "1/12/2024", "time": "11:00", "status": "Scheduled"},
+
   ];
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        title: Text(
+          'Lịch sử khám bệnh',
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+        backgroundColor: Color(0xFF1F2B6C),
+        elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => HomeScreen ()),
+              MaterialPageRoute(builder: (context) => ProfilePage()),
             );
           },
         ),
-        title: Text('Lịch sử khám bệnh',
-        style: TextStyle(
-          color: Color(0xFF1F2B6C),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 12.0),
+              color: Color(0xFF1F2B6C),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      'Ngày hẹn',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      'Thời gian',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      'Trạng thái',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            Expanded(
+              child: ListView.separated(
+                itemCount: appointments.length,
+                separatorBuilder: (context, index) => Divider(height: 1),
+                itemBuilder: (context, index) {
+                  final appointment = appointments[index];
+                  return Container(
+                    padding: EdgeInsets.symmetric(vertical: 12.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: Text(
+                            appointment["date"]!,
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Text(
+                            appointment["time"]!,
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.0, vertical: 4.0),
+                            decoration: BoxDecoration(
+                              color: Colors.teal[100],
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: Text(
+                              appointment["status"]!,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.teal[900],
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
-      ),
-      centerTitle: true,
-      elevation: 0,
-      ),
-      body: ListView.builder(
-        padding: EdgeInsets.all(16.0),
-        itemCount: appointments.length,
-        itemBuilder: (context, index) {
-          final appointment = appointments[index];
-          return Container(
-            margin: EdgeInsets.only(bottom: 12),
-            padding: EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.3),
-                  spreadRadius: 2,
-                  blurRadius: 4,
-                  offset: Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${appointment['time']}; ${appointment['date']}',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 8),
-                Text(appointment['room']!),
-                Text(appointment['doctor']!),
-                Text(appointment['specialty']!),
-              ],
-            ),
-          );
-        },
       ),
     );
   }

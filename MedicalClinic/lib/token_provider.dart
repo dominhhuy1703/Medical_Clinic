@@ -7,6 +7,11 @@ class TokenProvider extends ChangeNotifier {
 
   void setToken(String token) {
     _token = token;
-    notifyListeners(); // Thông báo cho UI khi token thay đổi
+    notifyListeners();
+  }
+
+  void clearToken() {
+    _token = '';
+    notifyListeners();
   }
 }

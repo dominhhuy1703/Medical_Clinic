@@ -1,8 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'login_screen.dart'; // Import LoginScreen
-import 'signup_screen.dart'; // Import SignUpScreen
-import 'token_provider.dart'; // Import TokenProvider
+import 'login_screen.dart';
+import 'signup_screen.dart';
+import 'token_provider.dart';
+import 'success_screen.dart';
+import 'booking_schedule.dart';
+import 'information_personal.dart';
+import 'medical_history.dart';
+import 'service_clinic.dart';
+import 'online_consultation.dart';
+import 'specialties_screen.dart';
+import 'profile.dart';
+import 'notifications.dart';
+import 'contact.dart';
+import 'medical_records.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -14,7 +26,24 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => TokenProvider(),
       child: MaterialApp(
-        home: WelcomeScreen(),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => WelcomeScreen(),
+          '/login': (context) => LoginScreen(),
+          '/signup': (context) => SignUpScreen(),
+          '/success_email': (context) => EmailVerifiedScreen(),
+          '/appointment':(context) => BookingPage(),
+          '/personal_info': (context) => UserInfoScreen(),
+          '/medical_history': (context) => MedicalHistoryPage(),
+          '/service': (context) => ServiceClinicScreen(),
+          '/online_consult': (context) => OnlineConsultationScreen(),
+          '/specialties': (context) => SpecialityScreen(),
+          '/profile': (context) => ProfilePage(),
+          '/notifications': (context) => NotificationsPage(),
+          '/contact': (context) => ContactPage(),
+          '/medical_records': (context) => MedicalRecordsPage (),
+        },
+
         debugShowCheckedModeBanner: false,
       ),
     );
@@ -27,11 +56,11 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false, // Vô hiệu hóa điều chỉnh chiều cao khi bàn phím xuất hiện
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: GestureDetector(
           onTap: () {
-            FocusScope.of(context).unfocus(); // Loại bỏ tiêu điểm nhập liệu
+            FocusScope.of(context).unfocus();
           },
           child: Center(
             child: Padding(
@@ -71,10 +100,8 @@ class WelcomeScreen extends StatelessWidget {
                     height: 55,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => SignUpScreen()),
-                        );
+                        Navigator.pushNamed(context, '/signup');
+
                       },
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(horizontal: 100, vertical: 15),
@@ -98,10 +125,8 @@ class WelcomeScreen extends StatelessWidget {
                     height: 55,
                     child: OutlinedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => LoginScreen()),
-                        );
+                        Navigator.pushNamed(context, '/login');
+
                       },
                       style: OutlinedButton.styleFrom(
                         padding: EdgeInsets.symmetric(horizontal: 100, vertical: 15),

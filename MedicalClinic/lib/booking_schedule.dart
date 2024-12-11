@@ -1,178 +1,273 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'doctor_selection.dart'; // Import lớp Doctor
-import 'methods_payment.dart'; // Import trang phương thức thanh toán
+import 'provision.dart';
+import 'home_screen.dart';
+import 'api_service.dart';
 
-class SchedulePage extends StatefulWidget {
-  final Doctor doctor;
-
-  SchedulePage({required this.doctor});
-
-  @override
-  _SchedulePageState createState() => _SchedulePageState();
+void main() {
+  runApp(const MaterialApp(home: BookingPage()));
 }
 
-class _SchedulePageState extends State<SchedulePage> {
-  DateTime? selectedDate;
-  TimeOfDay? selectedTime;
-  final TextEditingController notesController = TextEditingController();
+class BookingPage extends StatefulWidget {
+  const BookingPage({Key? key}) : super(key: key);
 
-  // Chọn ngày
-  Future<void> pickDate() async {
-    DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null && picked != selectedDate) {
+  @override
+  _BookingPageState createState() => _BookingPageState();
+}
+
+class _BookingPageState extends State<BookingPage> {
+  final _formKey = GlobalKey<FormState>();
+
+  String? selectedGender;
+  String? selectedDepartment;
+  String? selectedDoctor;
+  int consultationFee = 0;
+
+  List<Map<String, dynamic>> departments = [];
+  List<Map<String, dynamic>> doctors = [];
+  bool isLoadingDepartments = true;
+  bool isLoadingDoctors = false;
+
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchDepartments();
+  }
+
+  Future<void> _fetchDepartments() async {
+    try {
+      final data = await ApiService.getDepartments(context);
       setState(() {
-        selectedDate = picked;
+        departments = data;
+        isLoadingDepartments = false;
+      });
+    } catch (e) {
+      print("Lỗi khi gọi API: $e");
+      setState(() {
+        isLoadingDepartments = false;
       });
     }
   }
 
-  // Chọn giờ
-  Future<void> pickTime() async {
-    TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-    if (picked != null && picked != selectedTime) {
-      setState(() {
-        selectedTime = picked;
-      });
+  Future<void> _fetchDoctors() async {
+    if (selectedDepartment != null) {
+      try {
+        final department = departments.firstWhere((dept) => dept['name'] == selectedDepartment);
+        final departmentId = department['id'];
+
+        setState(() {
+          isLoadingDoctors = true;
+        });
+
+        final doctorData = await ApiService.getDoctorsByDepartment(departmentId, context);
+
+        setState(() {
+          doctors = doctorData;
+          isLoadingDoctors = false;
+        });
+      } catch (e) {
+        print("Lỗi khi lấy danh sách bác sĩ: $e");
+        setState(() {
+          isLoadingDoctors = false;
+        });
+      }
     }
-  }
-
-  void submitBooking() {
-    if (selectedDate == null || selectedTime == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Vui lòng điền đầy đủ thông tin")),
-      );
-      return;
-    }
-
-    final dateTime = DateTime(
-      selectedDate!.year,
-      selectedDate!.month,
-      selectedDate!.day,
-      selectedTime!.hour,
-      selectedTime!.minute,
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Đặt lịch thành công vào $dateTime với ${widget.doctor.name}")),
-    );
-
-    // Chuyển sang màn hình phương thức thanh toán
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MethodPaymentpage(), // Gọi trang thanh toán
-      ),
-    );
-
-    clearForm();
-  }
-
-  void clearForm() {
-    setState(() {
-      selectedDate = null;
-      selectedTime = null;
-      notesController.clear();
-    });
   }
 
   @override
   Widget build(BuildContext context) {
+    const primaryColor = Color(0xFF1F2B6C);
+
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'Đặt lịch khám với ${widget.doctor.name}',
-          style: TextStyle(color: Color(0xFF1F2B6C), fontSize: 20),
+        backgroundColor: primaryColor,
+        title: const Text(
+          'Đặt lịch khám',
+          style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Thông tin bác sĩ
-            Text(
-              "Bác sĩ: ${widget.doctor.name}",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Text(
-              "Chuyên khoa: ${widget.doctor.specialty ?? 'Không có thông tin'}",
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 16),
-
-            // Chọn ngày
-            TextButton(
-              onPressed: pickDate,
-              child: Text(
-                selectedDate == null
-                    ? "Chọn ngày"
-                    : "Ngày: ${DateFormat('yyyy-MM-dd').format(selectedDate!)}",
-                style: TextStyle(fontSize: 16, color: Color(0xFF1F2B6C)),
-              ),
-            ),
-            SizedBox(height: 16),
-
-            // Chọn giờ
-            TextButton(
-              onPressed: pickTime,
-              child: Text(
-                selectedTime == null
-                    ? "Chọn giờ"
-                    : "Giờ: ${selectedTime!.format(context)}",
-                style: TextStyle(fontSize: 16, color: Color(0xFF1F2B6C)),
-              ),
-            ),
-            SizedBox(height: 16),
-
-            // Ghi chú
-            TextField(
-              controller: notesController,
-              decoration: InputDecoration(
-                labelText: "Ghi chú (tùy chọn)",
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-              ),
-              maxLines: 3,
-            ),
-            Spacer(),
-
-            // Nút Đặt lịch
-            Center(
-              child: ElevatedButton(
-                onPressed: submitBooking,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF1F2B6C),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 100, vertical: 15),
-                ),
-                child: Text(
-                  'Đặt lịch',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
-              ),
-            ),
-          ],
+        elevation: 4,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+          },
         ),
       ),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Hãy điền các thông tin ',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: primaryColor),
+                ),
+                const SizedBox(height: 16),
+                _buildTextField(
+                  controller: nameController,
+                  label: 'Tên',
+                  hint: 'Nhập tên của bạn',
+                ),
+                const SizedBox(height: 12),
+                _buildTextField(
+                  controller: emailController,
+                  label: 'Email',
+                  hint: 'Nhập email',
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                const SizedBox(height: 12),
+                _buildTextField(
+                  controller: phoneController,
+                  label: 'Số điện thoại',
+                  hint: 'Nhập số điện thoại',
+                  keyboardType: TextInputType.phone,
+                ),
+                const SizedBox(height: 12),
+                _buildDropdown(
+                  label: 'Giới tính',
+                  items: ['Nam', 'Nữ'],
+                  value: selectedGender,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedGender = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: _buildDropdown(
+                        label: 'Khoa',
+                        items: isLoadingDepartments
+                            ? []
+                            : departments.map((department) => department['name'] as String).toList(),
+                        value: selectedDepartment,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedDepartment = value;
+                          });
+                          _fetchDoctors(); // Gọi API lấy danh sách bác sĩ khi chọn khoa
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      flex: 1,
+                      child: _buildDropdown(
+                        label: 'Bác sĩ',
+                        items: isLoadingDoctors
+                            ? []
+                            : doctors.map((doctor) => '${doctor['user']['first_name']} ${doctor['user']['last_name']}').toList(),
+                        value: selectedDoctor,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedDoctor = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Giá khám: $consultationFee VNĐ',
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.red),
+                ),
+                const SizedBox(height: 16),
+                Center(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 36),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      backgroundColor: primaryColor,
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ProvisionPage()),
+                        );
+                      }
+                    },
+                    child: const Text(
+                      'Đặt lịch',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required String hint,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      ),
+      keyboardType: keyboardType,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Vui lòng nhập $label';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _buildDropdown({
+    required String label,
+    required List<String> items,
+    String? value,
+    void Function(String?)? onChanged,
+  }) {
+    return DropdownButtonFormField<String>(
+      isExpanded: true, // Để dropdown không bị tràn
+      decoration: InputDecoration(
+        labelText: label,
+        filled: true,
+        fillColor: const Color(0xFFF3F4F6),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      value: value,
+      items: items.map((String item) {
+        return DropdownMenuItem<String>(
+          value: item,
+          child: Text(
+            item,
+            overflow: TextOverflow.ellipsis, // Rút gọn nếu quá dài
+          ),
+        );
+      }).toList(),
+      onChanged: onChanged,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Vui lòng chọn $label';
+        }
+        return null;
+      },
     );
   }
 }
