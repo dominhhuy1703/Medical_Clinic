@@ -14,7 +14,7 @@ class EmailVerifiedScreen extends StatelessWidget {
               Icon(
                 Icons.check_circle_outline,
                 size: 50,
-                color: Colors.green,
+                color: Color(0xFF1F2B6C),
               ),
               SizedBox(height: 20),
               Text(

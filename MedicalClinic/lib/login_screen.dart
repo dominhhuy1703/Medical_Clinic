@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'home_screen.dart';
 import 'verify_code.dart';
+import 'forgot_password.dart';
 import 'package:medical_clinic/service/auth_repository.dart';
 import 'token_provider.dart';
-
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -26,7 +26,6 @@ class _LoginScreenState extends State<LoginScreen> {
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Vui lòng nhập đầy đủ thông tin')),
-
       );
       return;
     }
@@ -36,19 +35,16 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      // Gọi AuthRepository để đăng nhập
       final authRepository = AuthRepository();
       final response = await authRepository.loginUser({
         'email': email,
         'password': password,
       });
 
-      // Kiểm tra phản hồi từ API
       if (response != null && response.containsKey('access')) {
         final bool isSendCode = response['is_send_code'] ?? false;
 
         if (isSendCode) {
-          // Chuyển hướng đến trang xác minh mã
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -56,7 +52,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           );
         } else {
-          // Lưu token và chuyển đến HomeScreen
           Provider.of<TokenProvider>(context, listen: false)
               .setToken(response['access']);
 
@@ -68,10 +63,8 @@ class _LoginScreenState extends State<LoginScreen> {
           );
         }
       } else if (response != null && response.containsKey('message')) {
-        // Trường hợp server trả về message báo lỗi
         final String errorMessage = response['message'];
         if (errorMessage.contains("Send code verify")) {
-          // Chuyển tới trang xác minh nếu có thông báo gửi mã xác minh thành công
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -81,12 +74,10 @@ class _LoginScreenState extends State<LoginScreen> {
         } else {
           throw Exception(errorMessage);
         }
-
       } else {
         throw Exception('Phản hồi không hợp lệ từ server');
       }
     } catch (e) {
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Đăng nhập thất bại: $e')),
       );
@@ -97,9 +88,13 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-
   void _navigateToForgotPassword() {
-    print(".");
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ForgotPasswordScreen(),
+      ),
+    );
   }
 
   @override
@@ -135,7 +130,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20),
-                  // Email Field
                   TextField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -145,7 +139,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   SizedBox(height: 10),
-                  // Password Field
                   TextField(
                     controller: _passwordController,
                     obscureText: _obscurePassword,
@@ -167,7 +160,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  // Login Button
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -192,7 +184,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  // forgot pw
                   TextButton(
                     onPressed: _navigateToForgotPassword,
                     child: Text(

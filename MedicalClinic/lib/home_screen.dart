@@ -27,7 +27,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
 
-
     final token = Provider.of<TokenProvider>(context).token;
 
     Color primaryColor = Color(0xFF1F2B6C);
@@ -36,13 +35,14 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.white,
       appBar: _selectedIndex == 0
           ? AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(
               '👋 Xin chào!',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       )
-          : null, // No AppBar for other pages (index 1 and 2)
+          : null,
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
@@ -136,7 +136,6 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildHomeTile(BuildContext context, String title, String imagePath, String route) {
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Card(
