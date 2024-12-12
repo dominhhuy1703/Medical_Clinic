@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'provision.dart';
 import 'home_screen.dart';
 import 'api_service.dart';
-
+import 'package:intl/intl.dart';
 void main() {
   runApp(const MaterialApp(home: BookingPage()));
 }
@@ -20,16 +20,20 @@ class _BookingPageState extends State<BookingPage> {
   String? selectedGender;
   String? selectedDepartment;
   String? selectedDoctor;
-  int consultationFee = 0;
+  int ?consultationFee ;
+  DateTime? selectedDate;
+  TimeOfDay? selectedTime;
 
   List<Map<String, dynamic>> departments = [];
   List<Map<String, dynamic>> doctors = [];
   bool isLoadingDepartments = true;
   bool isLoadingDoctors = false;
 
+
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
+  final List<String> availableTimes = [];
 
   @override
   void initState() {
@@ -55,14 +59,16 @@ class _BookingPageState extends State<BookingPage> {
   Future<void> _fetchDoctors() async {
     if (selectedDepartment != null) {
       try {
-        final department = departments.firstWhere((dept) => dept['name'] == selectedDepartment);
+        final department = departments.firstWhere((dept) =>
+        dept['name'] == selectedDepartment);
         final departmentId = department['id'];
 
         setState(() {
           isLoadingDoctors = true;
         });
 
-        final doctorData = await ApiService.getDoctorsByDepartment(departmentId, context);
+        final doctorData = await ApiService.getDoctorsByDepartment(
+            departmentId, context);
 
         setState(() {
           doctors = doctorData;
@@ -77,6 +83,73 @@ class _BookingPageState extends State<BookingPage> {
     }
   }
 
+  void _updateConsultationFee(String? doctorName) {
+    if (doctorName != null && doctors.isNotEmpty) {
+      final selectedDoctorData = doctors.firstWhere(
+            (doctor) =>
+        '${doctor['user']['first_name']} ${doctor['user']['last_name']}' ==
+            doctorName,
+        orElse: () => {},
+      );
+
+      if (selectedDoctorData.isNotEmpty) {
+        setState(() {
+          consultationFee = selectedDoctorData['consultation_fee'] ?? 0;
+        });
+      }
+    }
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate ?? DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    ) ?? DateTime.now();
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
+
+
+  Widget _buildTimePicker() {
+    return DropdownButtonFormField<String>(
+      isExpanded: true,
+      decoration: InputDecoration(
+        labelText: 'Giờ hẹn',
+        filled: true,
+        fillColor: const Color(0xFFF3F4F6),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      value: selectedTime != null
+          ? availableTimes.firstWhere(
+              (time) => time == selectedTime!.format(context))
+          : null,
+      items: availableTimes.map((String time) {
+        return DropdownMenuItem<String>(
+          value: time,
+          child: Text(time),
+        );
+      }).toList(),
+      onChanged: (value) {
+        setState(() {
+          selectedTime = TimeOfDay(
+              hour: int.parse(value!.split(':')[0]),
+              minute: int.parse(value.split(':')[1]));
+        });
+      },
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Vui lòng chọn giờ';
+        }
+        return null;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     const primaryColor = Color(0xFF1F2B6C);
@@ -87,14 +160,16 @@ class _BookingPageState extends State<BookingPage> {
         backgroundColor: primaryColor,
         title: const Text(
           'Đặt lịch khám',
-          style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         elevation: 4,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => HomeScreen()));
           },
         ),
       ),
@@ -142,45 +217,45 @@ class _BookingPageState extends State<BookingPage> {
                   },
                 ),
                 const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: _buildDropdown(
-                        label: 'Khoa',
-                        items: isLoadingDepartments
-                            ? []
-                            : departments.map((department) => department['name'] as String).toList(),
-                        value: selectedDepartment,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedDepartment = value;
-                          });
-                          _fetchDoctors(); // Gọi API lấy danh sách bác sĩ khi chọn khoa
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      flex: 1,
-                      child: _buildDropdown(
-                        label: 'Bác sĩ',
-                        items: isLoadingDoctors
-                            ? []
-                            : doctors.map((doctor) => '${doctor['user']['first_name']} ${doctor['user']['last_name']}').toList(),
-                        value: selectedDoctor,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedDoctor = value;
-                          });
-                        },
-                      ),
-                    ),
-                  ],
+                _buildDropdown(
+                  label: 'Khoa',
+                  items: isLoadingDepartments
+                      ? []
+                      : departments.map((department) => department['name'] as String).toList(),
+                  value: selectedDepartment,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedDepartment = value;
+                    });
+                    _fetchDoctors(); // Gọi API lấy danh sách bác sĩ khi chọn khoa
+                  },
                 ),
                 const SizedBox(height: 12),
+                _buildDropdown(
+                  label: 'Bác sĩ',
+                  items: isLoadingDoctors
+                      ? []
+                      : doctors
+                      .map((doctor) => '${doctor['user']['first_name']} ${doctor['user']['last_name']}')
+                      .toList(),
+                  value: selectedDoctor,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedDoctor = value;
+                    });
+                    _updateConsultationFee(value);
+                  },
+                ),
+                const SizedBox(height: 12),
+                GestureDetector(
+                  onTap: () => _selectDate(context),
+                  child: _buildDateField(),
+                ),
+                const SizedBox(height: 12),
+                _buildTimePicker(),
+                const SizedBox(height: 12),
                 Text(
-                  'Giá khám: $consultationFee VNĐ',
+                  'Giá khám: ',
                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.red),
                 ),
                 const SizedBox(height: 16),
@@ -244,7 +319,7 @@ class _BookingPageState extends State<BookingPage> {
     void Function(String?)? onChanged,
   }) {
     return DropdownButtonFormField<String>(
-      isExpanded: true, // Để dropdown không bị tràn
+      isExpanded: true,
       decoration: InputDecoration(
         labelText: label,
         filled: true,
@@ -255,10 +330,7 @@ class _BookingPageState extends State<BookingPage> {
       items: items.map((String item) {
         return DropdownMenuItem<String>(
           value: item,
-          child: Text(
-            item,
-            overflow: TextOverflow.ellipsis, // Rút gọn nếu quá dài
-          ),
+          child: Text(item),
         );
       }).toList(),
       onChanged: onChanged,
@@ -268,6 +340,22 @@ class _BookingPageState extends State<BookingPage> {
         }
         return null;
       },
+    );
+  }
+
+  Widget _buildDateField() {
+    final formattedDate = selectedDate != null
+        ? DateFormat('dd/MM/yyyy').format(selectedDate!)
+        : 'Chưa chọn ngày';
+    return InputDecorator(
+      decoration: InputDecoration(
+        labelText: 'Ngày hẹn',
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      child: Text(
+        formattedDate,
+        style: TextStyle(fontSize: 16),
+      ),
     );
   }
 }
