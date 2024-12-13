@@ -96,7 +96,7 @@ class ProfilePage extends StatelessWidget {
   }
 
   void _logout(BuildContext context) {
-    Provider.of<TokenProvider>(context, listen: false).clearToken();
+    Provider.of<TokenProvider>(context, listen: false).clearData();
     Navigator.pushReplacementNamed(context, '/login');
   }
 }

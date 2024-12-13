@@ -3,6 +3,8 @@ import 'provision.dart';
 import 'home_screen.dart';
 import 'api_service.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
 void main() {
   runApp(const MaterialApp(home: BookingPage()));
 }
@@ -20,15 +22,15 @@ class _BookingPageState extends State<BookingPage> {
   String? selectedGender;
   String? selectedDepartment;
   String? selectedDoctor;
-  int ?consultationFee ;
+  int? consultationFee;
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
 
+  Map<String, dynamic>? userInfo;
   List<Map<String, dynamic>> departments = [];
   List<Map<String, dynamic>> doctors = [];
   bool isLoadingDepartments = true;
   bool isLoadingDoctors = false;
-
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -38,7 +40,28 @@ class _BookingPageState extends State<BookingPage> {
   @override
   void initState() {
     super.initState();
-    _fetchDepartments();
+    _fetchUserInfo(); // Lấy thông tin người dùng hiện tại
+    _fetchDepartments(); // Gọi API lấy danh sách khoa ngay khi khởi tạo
+  }
+
+  Future<void> _fetchUserInfo() async {
+    try {
+      print("Bắt đầu lấy thông tin người dùng...");
+      final data = await ApiService.getLoggedInUserInfo(context);
+      print("Thông tin người dùng nhận được: $data");
+
+      setState(() {
+        userInfo = data;
+        nameController.text = '${userInfo?['first_name'] ?? ''} ${userInfo?['last_name'] ?? ''}';
+        emailController.text = userInfo?['email'] ?? '';
+        phoneController.text = userInfo?['phone'] ?? '';
+      });
+    } catch (e) {
+      print("Lỗi khi lấy thông tin người dùng: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Không thể tải thông tin người dùng")),
+      );
+    }
   }
 
   Future<void> _fetchDepartments() async {
@@ -59,16 +82,16 @@ class _BookingPageState extends State<BookingPage> {
   Future<void> _fetchDoctors() async {
     if (selectedDepartment != null) {
       try {
-        final department = departments.firstWhere((dept) =>
-        dept['name'] == selectedDepartment);
+        final department = departments.firstWhere(
+              (dept) => dept['name'] == selectedDepartment,
+        );
         final departmentId = department['id'];
 
         setState(() {
           isLoadingDoctors = true;
         });
 
-        final doctorData = await ApiService.getDoctorsByDepartment(
-            departmentId, context);
+        final doctorData = await ApiService.getDoctorsByDepartment(departmentId, context);
 
         setState(() {
           doctors = doctorData;
@@ -87,8 +110,7 @@ class _BookingPageState extends State<BookingPage> {
     if (doctorName != null && doctors.isNotEmpty) {
       final selectedDoctorData = doctors.firstWhere(
             (doctor) =>
-        '${doctor['user']['first_name']} ${doctor['user']['last_name']}' ==
-            doctorName,
+        '${doctor['user']['first_name']} ${doctor['user']['last_name']}' == doctorName,
         orElse: () => {},
       );
 
@@ -113,7 +135,6 @@ class _BookingPageState extends State<BookingPage> {
       });
     }
   }
-
 
   Widget _buildTimePicker() {
     return DropdownButtonFormField<String>(
@@ -217,6 +238,14 @@ class _BookingPageState extends State<BookingPage> {
                   },
                 ),
                 const SizedBox(height: 12),
+                // Di chuyển phần chọn ngày và giờ lên trên
+                GestureDetector(
+                  onTap: () => _selectDate(context),
+                  child: _buildDateField(),
+                ),
+                const SizedBox(height: 12),
+                _buildTimePicker(),
+                const SizedBox(height: 12),
                 _buildDropdown(
                   label: 'Khoa',
                   items: isLoadingDepartments
@@ -247,15 +276,8 @@ class _BookingPageState extends State<BookingPage> {
                   },
                 ),
                 const SizedBox(height: 12),
-                GestureDetector(
-                  onTap: () => _selectDate(context),
-                  child: _buildDateField(),
-                ),
-                const SizedBox(height: 12),
-                _buildTimePicker(),
-                const SizedBox(height: 12),
                 Text(
-                  'Giá khám: ',
+                  'Giá khám: ${consultationFee != null ? '$consultationFee VND' : 'Chưa có thông tin'}',
                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.red),
                 ),
                 const SizedBox(height: 16),
@@ -268,10 +290,7 @@ class _BookingPageState extends State<BookingPage> {
                     ),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => ProvisionPage()),
-                        );
+                        // Handle the booking submission logic here
                       }
                     },
                     child: const Text(
@@ -299,8 +318,9 @@ class _BookingPageState extends State<BookingPage> {
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        filled: true,
+        fillColor: const Color(0xFFF3F4F6),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
       ),
       keyboardType: keyboardType,
       validator: (value) {
@@ -316,7 +336,7 @@ class _BookingPageState extends State<BookingPage> {
     required String label,
     required List<String> items,
     String? value,
-    void Function(String?)? onChanged,
+    required Function(String?) onChanged,
   }) {
     return DropdownButtonFormField<String>(
       isExpanded: true,
@@ -334,27 +354,21 @@ class _BookingPageState extends State<BookingPage> {
         );
       }).toList(),
       onChanged: onChanged,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Vui lòng chọn $label';
-        }
-        return null;
-      },
     );
   }
 
   Widget _buildDateField() {
-    final formattedDate = selectedDate != null
-        ? DateFormat('dd/MM/yyyy').format(selectedDate!)
-        : 'Chưa chọn ngày';
-    return InputDecorator(
-      decoration: InputDecoration(
-        labelText: 'Ngày hẹn',
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF3F4F6),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
-        formattedDate,
-        style: TextStyle(fontSize: 16),
+        selectedDate == null
+            ? 'Chọn ngày'
+            : '${selectedDate?.day}/${selectedDate?.month}/${selectedDate?.year}',
+        style: const TextStyle(fontSize: 16),
       ),
     );
   }
