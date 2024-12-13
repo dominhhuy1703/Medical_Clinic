@@ -1,4 +1,5 @@
 name: medical_clinic
+
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -42,6 +43,7 @@ dependencies:
   shared_preferences: ^2.0.0
   font_awesome_flutter: ^10.1.0
   diacritic: ^0.1.6
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -101,6 +103,7 @@ flutter:
     - assets/doctor2.png
     - assets/doctor3.png
     - assets/doctor4.png
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
