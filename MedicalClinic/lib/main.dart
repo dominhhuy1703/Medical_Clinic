@@ -14,7 +14,8 @@ import 'profile.dart';
 import 'notifications.dart';
 import 'contact.dart';
 import 'medical_records.dart';
-
+import 'forgot_password.dart';
+import 'reset_password.dart';
 
 void main() {
   runApp(MyApp());
@@ -42,8 +43,9 @@ class MyApp extends StatelessWidget {
           '/notifications': (context) => NotificationsPage(),
           '/contact': (context) => ContactPage(),
           '/medical_records': (context) => MedicalRecordsPage (),
+          '/forgot_password': (context) => ForgotPasswordScreen(),
+          '/reset_password': (context) => PasswordResetScreen(),
         },
-
         debugShowCheckedModeBanner: false,
       ),
     );
@@ -101,7 +103,6 @@ class WelcomeScreen extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.pushNamed(context, '/signup');
-
                       },
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(horizontal: 100, vertical: 15),
@@ -126,7 +127,6 @@ class WelcomeScreen extends StatelessWidget {
                     child: OutlinedButton(
                       onPressed: () {
                         Navigator.pushNamed(context, '/login');
-
                       },
                       style: OutlinedButton.styleFrom(
                         padding: EdgeInsets.symmetric(horizontal: 100, vertical: 15),
@@ -154,4 +154,3 @@ class WelcomeScreen extends StatelessWidget {
     );
   }
 }
-

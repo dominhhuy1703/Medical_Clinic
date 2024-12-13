@@ -23,20 +23,20 @@ class UserInfoScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            UserInfoRow(label: 'Họ và tên', value: ''),
-            UserInfoRow(label: 'Điện thoại', value: ''),
-            UserInfoRow(label: 'Ngày sinh', value: ''),
-            UserInfoRow(label: 'Giới tính', value: ''),
-            UserInfoRow(label: 'Địa chỉ', value: ''),
+            UserInfoRow(label: 'Họ và tên', value: '--'),
+            UserInfoRow(label: 'Điện thoại', value: '--'),
+            UserInfoRow(label: 'Ngày sinh', value: '--'),
+            UserInfoRow(label: 'Giới tính', value: '--'),
+            UserInfoRow(label: 'Địa chỉ', value: '--'),
             Divider(),
             Text(
               'Thông tin bổ sung',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            UserInfoRow(label: 'Mã BHYT', value: ''),
-            UserInfoRow(label: 'Số CMND/CCCD', value: ''),
-            UserInfoRow(label: 'Dân tộc', value: ''),
-            UserInfoRow(label: 'Nghề nghiệp', value: ''),
+            UserInfoRow(label: 'Mã BHYT', value: '--'),
+            UserInfoRow(label: 'Số CMND/CCCD', value: '--'),
+            UserInfoRow(label: 'Dân tộc', value: '--'),
+            UserInfoRow(label: 'Nghề nghiệp', value: '--'),
           ],
         ),
       ),
@@ -67,7 +67,7 @@ class UserInfoRow extends StatelessWidget {
             flex: 3,
             child: Text(
               value,
-              style: TextStyle(fontSize: 16, color: Colors.black),
+              style: TextStyle(fontSize: 16, color: Colors.black87), // Adjusted text color
             ),
           ),
         ],
