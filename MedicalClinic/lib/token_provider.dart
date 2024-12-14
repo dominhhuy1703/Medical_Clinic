@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class TokenProvider extends ChangeNotifier {
   String _token = '';
-  int? _user_id = 5; // Thêm biến userId
+  int? _user_id = 58;
 
   String get token => _token;
   int? get user_id => _user_id;
@@ -19,7 +19,7 @@ class TokenProvider extends ChangeNotifier {
 
   void clearData() {
     _token = '';
-    _user_id = null; // Xóa userId khi logout
+    _user_id = null;
     notifyListeners();
   }
 }
