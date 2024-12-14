@@ -90,6 +90,49 @@ class ApiService {
     }
   }
 
+  // Hàm lấy medical-record theo userId
+  static Future<List<Map<String, dynamic>>> getMedicalRecordsByUserId(BuildContext context) async {
+    // Lấy userId từ TokenProvider
+    final userId = Provider.of<TokenProvider>(context, listen: false).user_id;
+    if (userId == null) {
+      throw Exception('User ID không tồn tại, vui lòng đăng nhập lại.');
+    }
+
+    final url = Uri.parse('$baseUrl/medical-record/?user_id=$userId');
+    print("Gọi đến URL: $url");
+
+    // Lấy token từ TokenProvider
+    final token = Provider.of<TokenProvider>(context, listen: false).token;
+
+    if (token == null || token.isEmpty) {
+      throw Exception('Token không hợp lệ hoặc chưa đăng nhập');
+    }
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      print("Phản hồi từ API $url: ${response.statusCode}");
+      print("Phản hồi body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final decodedResponse = utf8.decode(response.bodyBytes);
+        final data = json.decode(decodedResponse);
+        // Trả về danh sách medical-record
+        return List<Map<String, dynamic>>.from(data['results']);
+      } else {
+        throw Exception('Failed to load medical records: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
   // Hàm lấy danh sách khoa từ API với Authorization Header
   static Future<List<Map<String, dynamic>>> getDepartments(BuildContext context) async {
     final url = Uri.parse('$baseUrl/department/');

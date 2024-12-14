@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'profile.dart';
 import 'medical_records_detail.dart';
-
+import 'api_service.dart';
 
 class MedicalRecordsPage extends StatelessWidget {
   static const Color primaryColor = Color(0xFF1F2B6C);
@@ -26,23 +26,39 @@ class MedicalRecordsPage extends StatelessWidget {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            _buildMedicalRecordCard(
-              context,
-              recordId: 6,
-              diagnosis: "Viêm phổi",
-              treatmentPlan: "Kháng sinh, nghỉ ngơi",
-              medication: "Amoxicillin",
-              startDate: "01/12/2024",
-              endDate: "07/12/2024",
-              notes: "Cần theo dõi chặt chẽ",
-              doctor: "Dr. Nguyễn Văn A",
-            ),
-          ],
-        ),
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: ApiService.getMedicalRecordsByUserId(context),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text("Lỗi: ${snapshot.error}"));
+          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+            final records = snapshot.data!;
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: records.map((record) {
+                  return _buildMedicalRecordCard(
+                    context,
+                    recordId: record['id'] ?? 0,
+                    diagnosis: record['diagnosis'] ?? "Không có chẩn đoán",
+                    treatmentPlan: record['treatment'] ?? "Không có kế hoạch điều trị",
+                    medication: record['prescription'] ?? "Không có đơn thuốc",
+                    startDate: record['start_date'] ?? "N/A",
+                    endDate: record['end_date'] ?? "N/A",
+                    notes: record['notes'] ?? "Không có ghi chú",
+                    doctor: record['doctor']?['user']?['first_name'] != null
+                        ? "Bác sĩ ${record['doctor']['user']['first_name']} ${record['doctor']['user']['last_name']}"
+                        : "Không có thông tin bác sĩ",
+                  );
+                }).toList(),
+              ),
+            );
+          } else {
+            return const Center(child: Text("Không có hồ sơ bệnh án nào."));
+          }
+        },
       ),
     );
   }
@@ -63,6 +79,7 @@ class MedicalRecordsPage extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.0),
       ),
+      margin: const EdgeInsets.only(bottom: 16.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -78,18 +95,15 @@ class MedicalRecordsPage extends StatelessWidget {
             ),
             const SizedBox(height: 16.0),
             _buildDetailRow("Chẩn đoán", diagnosis),
-            _buildDetailRow("Ngày hẹn", startDate),
+            _buildDetailRow("Ngày bắt đầu", startDate),
+            _buildDetailRow("Ngày kết thúc", endDate),
             _buildDetailRow("Bác sĩ", doctor),
-
-            Container(
-              color: Colors.white,
-              child: const SizedBox(height: 16.0),
-            ),
+            const SizedBox(height: 16.0),
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryColor,
-                  padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 50.0), // Increased horizontal padding
+                  padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 50.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.0),
                   ),
@@ -113,7 +127,7 @@ class MedicalRecordsPage extends StatelessWidget {
                 },
                 child: const Text(
                   'Xem chi tiết',
-                  style: TextStyle(fontSize: 18.0, color: Colors.white), // White text color
+                  style: TextStyle(fontSize: 18.0, color: Colors.white),
                 ),
               ),
             ),
