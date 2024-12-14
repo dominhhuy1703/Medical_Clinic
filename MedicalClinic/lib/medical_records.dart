@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // Import thư viện intl
 import 'profile.dart';
 import 'medical_records_detail.dart';
 import 'api_service.dart';
@@ -63,6 +64,26 @@ class MedicalRecordsPage extends StatelessWidget {
     );
   }
 
+  // Hàm định dạng ngày
+  String formatDate(String dateTime) {
+    try {
+      DateTime parsedDate = DateTime.parse(dateTime);
+      return DateFormat('dd/MM/yyyy').format(parsedDate);
+    } catch (e) {
+      return 'N/A';
+    }
+  }
+
+  // Hàm định dạng giờ
+  String formatTime(String dateTime) {
+    try {
+      DateTime parsedDate = DateTime.parse(dateTime);
+      return DateFormat('HH:mm').format(parsedDate);
+    } catch (e) {
+      return 'N/A';
+    }
+  }
+
   Widget _buildMedicalRecordCard(
       BuildContext context, {
         required int recordId,
@@ -95,8 +116,8 @@ class MedicalRecordsPage extends StatelessWidget {
             ),
             const SizedBox(height: 16.0),
             _buildDetailRow("Chẩn đoán", diagnosis),
-            _buildDetailRow("Ngày bắt đầu", startDate),
-            _buildDetailRow("Ngày kết thúc", endDate),
+            _buildDetailRow("Ngày bắt đầu", "${formatDate(startDate)} lúc ${formatTime(startDate)}"),
+            _buildDetailRow("Ngày kết thúc", "${formatDate(endDate)} lúc ${formatTime(endDate)}"),
             _buildDetailRow("Bác sĩ", doctor),
             const SizedBox(height: 16.0),
             Center(

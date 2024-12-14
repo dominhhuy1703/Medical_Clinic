@@ -1,25 +1,64 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // Import thư viện intl
 import 'profile.dart';
+import 'api_service.dart'; // Import ApiService
+import 'package:provider/provider.dart';
+import 'token_provider.dart';
 
-
-
-class MyApp extends StatelessWidget {
+class MedicalHistoryPage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MedicalHistoryPage(),
-    );
-  }
+  _MedicalHistoryPageState createState() => _MedicalHistoryPageState();
 }
 
-class MedicalHistoryPage extends StatelessWidget {
-  final List<Map<String, String>> appointments = [
-    {"date": "1/12/2024", "time": "11:00", "status": "Scheduled"},
-  ];
+class _MedicalHistoryPageState extends State<MedicalHistoryPage> {
+  List<Map<String, dynamic>> appointments = [];
+  bool isLoading = true;
+  String errorMessage = "";
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAppointments();
+  }
+
+  // Hàm tải dữ liệu từ API
+  Future<void> fetchAppointments() async {
+    try {
+      final data = await ApiService.getAppointmentsByUserId(context);
+      setState(() {
+        appointments = data;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        errorMessage = e.toString();
+        isLoading = false;
+      });
+    }
+  }
+
+  // Hàm định dạng ngày
+  String formatDate(String appointmentDate) {
+    try {
+      DateTime parsedDate = DateTime.parse(appointmentDate);
+      return DateFormat('dd/MM/yyyy').format(parsedDate);
+    } catch (e) {
+      return 'N/A';
+    }
+  }
+
+  // Hàm định dạng giờ
+  String formatTime(String appointmentDate) {
+    try {
+      DateTime parsedDate = DateTime.parse(appointmentDate);
+      return DateFormat('HH:mm').format(parsedDate);
+    } catch (e) {
+      return 'N/A';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -44,6 +83,7 @@ class MedicalHistoryPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // Header
             Container(
               padding: EdgeInsets.symmetric(vertical: 12.0),
               color: Color(0xFF1F2B6C),
@@ -63,7 +103,7 @@ class MedicalHistoryPage extends StatelessWidget {
                   Expanded(
                     flex: 2,
                     child: Text(
-                      'Thời gian',
+                      'Giờ hẹn',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -86,41 +126,59 @@ class MedicalHistoryPage extends StatelessWidget {
               ),
             ),
 
+            // Hiển thị dữ liệu
             Expanded(
-              child: ListView.separated(
+              child: isLoading
+                  ? Center(child: CircularProgressIndicator()) // Hiển thị loading
+                  : errorMessage.isNotEmpty
+                  ? Center(child: Text(errorMessage)) // Hiển thị lỗi
+                  : appointments.isEmpty
+                  ? Center(child: Text('Không có lịch sử khám bệnh'))
+                  : ListView.separated(
                 itemCount: appointments.length,
-                separatorBuilder: (context, index) => Divider(height: 1),
+                separatorBuilder: (context, index) =>
+                    Divider(height: 1),
                 itemBuilder: (context, index) {
                   final appointment = appointments[index];
                   return Container(
-                    padding: EdgeInsets.symmetric(vertical: 12.0),
+                    padding:
+                    EdgeInsets.symmetric(vertical: 12.0),
                     child: Row(
                       children: [
+                        // Ngày hẹn
                         Expanded(
                           flex: 2,
                           child: Text(
-                            appointment["date"]!,
+                            formatDate(appointment[
+                            "appointment_date"] ??
+                                ''),
                             style: TextStyle(fontSize: 16),
                           ),
                         ),
+                        // Giờ hẹn
                         Expanded(
                           flex: 2,
                           child: Text(
-                            appointment["time"]!,
+                            formatTime(appointment[
+                            "appointment_date"] ??
+                                ''),
                             style: TextStyle(fontSize: 16),
                           ),
                         ),
+                        // Trạng thái
                         Expanded(
                           flex: 2,
                           child: Container(
                             padding: EdgeInsets.symmetric(
-                                horizontal: 8.0, vertical: 4.0),
+                                horizontal: 8.0,
+                                vertical: 4.0),
                             decoration: BoxDecoration(
                               color: Colors.teal[100],
-                              borderRadius: BorderRadius.circular(8.0),
+                              borderRadius:
+                              BorderRadius.circular(8.0),
                             ),
                             child: Text(
-                              appointment["status"]!,
+                              appointment["status"] ?? 'N/A',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.teal[900],
