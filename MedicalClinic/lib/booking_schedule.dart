@@ -26,6 +26,7 @@ class _BookingPageState extends State<BookingPage> {
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
 
+
   Map<String, dynamic>? userInfo;
   List<Map<String, dynamic>> departments = [];
   List<Map<String, dynamic>> doctors = [];
@@ -35,7 +36,17 @@ class _BookingPageState extends State<BookingPage> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
-  final List<String> availableTimes = [];
+  final List<String> availableTimes = [
+    '9:00',
+    '10:00',
+    '11:00',
+    '13:00',
+    '14:00',
+    '15:00',
+    '16:00',
+    '17:00',
+    '18:00'
+  ];
 
   @override
   void initState() {
@@ -118,9 +129,14 @@ class _BookingPageState extends State<BookingPage> {
         setState(() {
           consultationFee = selectedDoctorData['consultation_fee'] ?? 0;
         });
+      } else {
+        setState(() {
+          consultationFee = 0; // Nếu không tìm thấy, set giá khám là 0
+        });
       }
     }
   }
+
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
@@ -137,39 +153,43 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   Widget _buildTimePicker() {
-    return DropdownButtonFormField<String>(
-      isExpanded: true,
-      decoration: InputDecoration(
-        labelText: 'Giờ hẹn',
-        filled: true,
-        fillColor: const Color(0xFFF3F4F6),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-      value: selectedTime != null
-          ? availableTimes.firstWhere(
-              (time) => time == selectedTime!.format(context))
-          : null,
-      items: availableTimes.map((String time) {
-        return DropdownMenuItem<String>(
-          value: time,
-          child: Text(time),
+    return GestureDetector(
+      onTap: () async {
+        final TimeOfDay? pickedTime = await showTimePicker(
+          context: context,
+          initialTime: selectedTime ?? TimeOfDay.now(),
         );
-      }).toList(),
-      onChanged: (value) {
-        setState(() {
-          selectedTime = TimeOfDay(
-              hour: int.parse(value!.split(':')[0]),
-              minute: int.parse(value.split(':')[1]));
-        });
-      },
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Vui lòng chọn giờ';
+
+        if (pickedTime != null) {
+          setState(() {
+            selectedTime = pickedTime;
+          });
         }
-        return null;
       },
+      child: AbsorbPointer(
+        child: TextFormField(
+          decoration: InputDecoration(
+            labelText: 'Time',
+            filled: true,
+            fillColor: const Color(0xFFF3F4F6),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          validator: (value) {
+            if (selectedTime == null) {
+              return 'Please select a time';
+            }
+            return null;
+          },
+          controller: TextEditingController(text: selectedTime?.format(context)),
+        ),
+      ),
     );
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {
