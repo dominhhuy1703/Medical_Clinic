@@ -52,7 +52,6 @@ class ApiService {
 
   // Hàm lấy thông tin User đã đăng nhập
   static Future<Map<String, dynamic>> getLoggedInUserInfo(BuildContext context) async {
-    // Lấy userID từ TokenProvider
     final userId = Provider.of<TokenProvider>(context, listen: false).user_id;
     if (userId == null) {
       throw Exception('User ID không tồn tại, vui lòng đăng nhập lại.');
@@ -92,7 +91,6 @@ class ApiService {
 
   // Hàm lấy danh sách appointment theo userId
   static Future<List<Map<String, dynamic>>> getAppointmentsByUserId(BuildContext context) async {
-    // Lấy userId từ TokenProvider
     final userId = Provider.of<TokenProvider>(context, listen: false).user_id;
     if (userId == null) {
       throw Exception('User ID không tồn tại, vui lòng đăng nhập lại.');
@@ -101,9 +99,7 @@ class ApiService {
     final url = Uri.parse('$baseUrl/appointment/?user_id=$userId');
     print("Gọi đến URL: $url");
 
-    // Lấy token từ TokenProvider
     final token = Provider.of<TokenProvider>(context, listen: false).token;
-
     if (token == null || token.isEmpty) {
       throw Exception('Token không hợp lệ hoặc chưa đăng nhập');
     }
@@ -121,7 +117,6 @@ class ApiService {
       print("Phản hồi body: ${response.body}");
 
       if (response.statusCode == 200) {
-        // Giải mã body từ response và parse JSON
         final decodedResponse = utf8.decode(response.bodyBytes);
         final data = json.decode(decodedResponse);
         return List<Map<String, dynamic>>.from(data['results']);
@@ -135,7 +130,6 @@ class ApiService {
 
   // Hàm lấy medical-record theo userId
   static Future<List<Map<String, dynamic>>> getMedicalRecordsByUserId(BuildContext context) async {
-    // Lấy userId từ TokenProvider
     final userId = Provider.of<TokenProvider>(context, listen: false).user_id;
     if (userId == null) {
       throw Exception('User ID không tồn tại, vui lòng đăng nhập lại.');
@@ -144,9 +138,7 @@ class ApiService {
     final url = Uri.parse('$baseUrl/medical-record/?user_id=$userId');
     print("Gọi đến URL: $url");
 
-    // Lấy token từ TokenProvider
     final token = Provider.of<TokenProvider>(context, listen: false).token;
-
     if (token == null || token.isEmpty) {
       throw Exception('Token không hợp lệ hoặc chưa đăng nhập');
     }
@@ -166,7 +158,6 @@ class ApiService {
       if (response.statusCode == 200) {
         final decodedResponse = utf8.decode(response.bodyBytes);
         final data = json.decode(decodedResponse);
-        // Trả về danh sách medical-record
         return List<Map<String, dynamic>>.from(data['results']);
       } else {
         throw Exception('Failed to load medical records: ${response.statusCode}');
@@ -181,7 +172,6 @@ class ApiService {
     final url = Uri.parse('$baseUrl/department/');
     print("Gọi đến URL: $url");
 
-    // Lấy token từ TokenProvider
     final token = Provider.of<TokenProvider>(context, listen: false).token;
 
     if (token == null) {
@@ -266,6 +256,65 @@ class ApiService {
       }
     } catch (e) {
       throw Exception('Error: $e');
+    }
+  }
+
+  // Hàm tạo lịch hẹn với ngày giờ kết hợp
+  static Future<Map<String, dynamic>> createAppointment({
+    required int doctorId, // Chuyển thành int
+    required DateTime appointmentDate,
+    String? status,
+    required BuildContext context,
+  }) async {
+    final url = Uri.parse('$baseUrl/appointment/'); // API endpoint
+
+    final token = Provider.of<TokenProvider>(context, listen: false).token;
+
+    if (token.isEmpty) {
+      throw Exception('Token không hợp lệ hoặc chưa đăng nhập.');
+    }
+
+    // Chuyển appointmentDate sang chuỗi ISO 8601
+    final String appointmentDateIso = appointmentDate.toIso8601String();
+
+    final Map<String, dynamic> requestBody = {
+      'doctor_id': doctorId, // Truyền thẳng int
+      'appointment_date': appointmentDateIso,
+      'status': status ?? '',
+    };
+
+    print("===== Bắt đầu gọi API Tạo Lịch Hẹn =====");
+    print("API URL: $url");
+    print("Request Headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer $token' }");
+    print("Request Body: ${jsonEncode(requestBody)}");
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(requestBody),
+      );
+
+      print("Response Status Code: ${response.statusCode}");
+      print("Response Body: ${response.body}");
+
+      if (response.statusCode == 201) {
+        print("Đặt lịch thành công!");
+        return jsonDecode(response.body);
+      } else {
+        print("Đặt lịch thất bại - Status Code: ${response.statusCode}");
+        print("Lý do thất bại: ${response.body}");
+        throw Exception(
+            'Failed to create appointment: ${response.statusCode} - ${response.body}');
+      }
+    } catch (error) {
+      print("Lỗi khi gọi API: $error");
+      throw Exception('Error creating appointment: $error');
+    } finally {
+      print("===== Kết thúc gọi API Tạo Lịch Hẹn =====");
     }
   }
 }
