@@ -18,6 +18,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  Color primaryColor = Color(0xFF1F2B6C);
   bool _obscurePassword = true;
   bool _isLoading = false;
 
@@ -76,28 +77,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: Column(
                 children: [
                   Text(
-                    'Chào mừng bạn đến với\nMEDICAL CLINIC',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                    'Chào mừng đến với\nMEDICAL CLINIC',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      color: primaryColor,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 10),
                   Text(
                     'Đăng ký',
-                    style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                      color: primaryColor,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 30),
+                  SizedBox(height: 15),
                   TextFormField(
                     controller: _firstNameController,
                     decoration: InputDecoration(labelText: 'Họ'),
                     validator: (value) => value!.isEmpty ? 'Vui lòng nhập họ' : null,
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 15),
                   TextFormField(
                     controller: _lastNameController,
                     decoration: InputDecoration(labelText: 'Tên'),
                     validator: (value) => value!.isEmpty ? 'Vui lòng nhập tên' : null,
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 15),
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(labelText: 'Email'),
@@ -106,20 +116,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ? 'Vui lòng nhập email hợp lệ'
                         : null,
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 15),
                   TextFormField(
                     controller: _phoneController,
                     decoration: InputDecoration(labelText: 'Số điện thoại'),
                     keyboardType: TextInputType.phone,
                     validator: (value) => value!.isEmpty ? 'Vui lòng nhập số điện thoại' : null,
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 15),
                   TextFormField(
                     controller: _addressController,
                     decoration: InputDecoration(labelText: 'Địa chỉ'),
                     validator: (value) => value!.isEmpty ? 'Vui lòng nhập địa chỉ' : null,
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 15),
                   TextFormField(
                     controller: _passwordController,
                     obscureText: _obscurePassword,
@@ -138,19 +148,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     validator: (value) => value!.length < 6 ? 'Mật khẩu ít nhất 6 ký tự' : null,
                   ),
-                  SizedBox(height: 20),
-                  ElevatedButton(
+                  SizedBox(height: 15),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
                     onPressed: _isLoading ? null : _signUp,
-                    child: _isLoading
-                        ? CircularProgressIndicator()
-                        : Text('Đăng ký', style: TextStyle(fontSize: 18)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: _isLoading
+                        ? CircularProgressIndicator(color: Colors.white,)
+                        : Text('Đăng ký',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                        )
+                      ),
+                    ),
                   ),
                   SizedBox(height: 15),
                   GestureDetector(
                     onTap: () {
                       Navigator.pop(context);
                     },
-                    child: Text('Đã có tài khoản? Đăng nhập'),
+                    child: Text(
+                      'Đã có tài khoản? Đăng nhập',
+                      style: TextStyle(
+                        color: primaryColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ),
                 ],
               ),

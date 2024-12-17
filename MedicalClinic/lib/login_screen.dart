@@ -110,8 +110,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  SizedBox(height: 20),
                   Text(
-                    'Chào mừng bạn đến với\nMEDICAL CLINIC',
+                    'Chào mừng đến với\nMEDICAL CLINIC',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w600,
@@ -123,11 +124,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text(
                     'Đăng nhập',
                     style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
                       color: primaryColor,
                     ),
                     textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20),
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.3,
+                    margin: EdgeInsets.symmetric(vertical: 20),
+                    child: Image.asset(
+                      'assets/img1.png',
+                      fit: BoxFit.contain,
+                    ),
                   ),
                   SizedBox(height: 20),
                   TextField(
@@ -147,9 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       border: OutlineInputBorder(),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _obscurePassword
-                              ? Icons.visibility_off
-                              : Icons.visibility,
+                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
                         ),
                         onPressed: () {
                           setState(() {
@@ -159,7 +167,21 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: _navigateToForgotPassword,
+                        child: Text(
+                          'Quên mật khẩu?',
+                          style: TextStyle(
+                            color: primaryColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -171,26 +193,27 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       child: _isLoading
-                          ? CircularProgressIndicator(
-                        color: Colors.white,
-                      )
+                          ? CircularProgressIndicator(color: Colors.white,)
                           : Text(
                         'Đăng nhập',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 20,
                           color: Colors.white,
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
-                  TextButton(
-                    onPressed: _navigateToForgotPassword,
+                  SizedBox(height: 10),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/signup');
+                    },
                     child: Text(
-                      'Quên mật khẩu?',
+                      'Chưa có tài khoản? Đăng ký',
                       style: TextStyle(
                         color: primaryColor,
                         fontSize: 16,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
