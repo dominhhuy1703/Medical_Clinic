@@ -26,7 +26,6 @@ class _BookingPageState extends State<BookingPage> {
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
 
-
   Map<String, dynamic>? userInfo;
   List<Map<String, dynamic>> departments = [];
   List<Map<String, dynamic>> doctors = [];
@@ -137,7 +136,6 @@ class _BookingPageState extends State<BookingPage> {
     }
   }
 
-
   Future<void> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
       context: context,
@@ -169,7 +167,7 @@ class _BookingPageState extends State<BookingPage> {
       child: AbsorbPointer(
         child: TextFormField(
           decoration: InputDecoration(
-            labelText: 'Time',
+            labelText: 'Giờ',
             filled: true,
             fillColor: const Color(0xFFF3F4F6),
             border: OutlineInputBorder(
@@ -178,7 +176,7 @@ class _BookingPageState extends State<BookingPage> {
           ),
           validator: (value) {
             if (selectedTime == null) {
-              return 'Please select a time';
+              return 'Hãy chọn giờ';
             }
             return null;
           },
@@ -188,7 +186,63 @@ class _BookingPageState extends State<BookingPage> {
     );
   }
 
+  Future<void> _onSubmit() async {
+    print("Bắt đầu đặt lịch...");
+    if (_formKey.currentState!.validate()) {
+      // Kiểm tra các trường bắt buộc đã được chọn
+      if (selectedDate == null || selectedTime == null || selectedDoctor == null) {
+        print("Thiếu thông tin: selectedDate=$selectedDate, selectedTime=$selectedTime, selectedDoctor=$selectedDoctor");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Vui lòng chọn ngày, giờ và bác sĩ')));
+        return;
+      }
 
+      // Chuyển đổi giờ từ TimeOfDay sang DateTime
+      final DateTime appointmentDateTime = DateTime(
+        selectedDate!.year,
+        selectedDate!.month,
+        selectedDate!.day,
+        selectedTime!.hour,
+        selectedTime!.minute,
+      );
+
+      print("Thời gian đặt lịch: $appointmentDateTime");
+
+      // Giả sử bạn đã có doctorId (có thể từ danh sách bác sĩ)
+      final doctor = doctors.firstWhere(
+            (doctor) => '${doctor['user']['first_name']} ${doctor['user']['last_name']}' == selectedDoctor,
+        orElse: () => {'id': -1},
+      );
+      final doctorId = doctor['id'];
+
+      if (doctorId == -1) {
+        print("Không tìm thấy bác sĩ: selectedDoctor=$selectedDoctor");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Không tìm thấy bác sĩ')));
+        return;
+      }
+
+      print("Doctor ID: $doctorId");
+
+      // Gọi phương thức tạo cuộc hẹn từ ApiService
+      try {
+        print("Gửi yêu cầu tạo lịch hẹn...");
+        final response = await ApiService.createAppointment(
+          doctorId: doctorId,
+          appointmentDate: appointmentDateTime,
+          status: 'Scheduled', // Trạng thái cuộc hẹn
+          context: context,
+        );
+
+        print("Phản hồi từ server: $response");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Đặt lịch thành công!')));
+      } catch (e) {
+        // Log lỗi chi tiết
+        print("Lỗi khi đặt lịch: $e");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Đặt lịch thất bại: $e')));
+      }
+    } else {
+      print("Form không hợp lệ");
+    }
+  }
 
 
   @override
@@ -308,11 +362,7 @@ class _BookingPageState extends State<BookingPage> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                       backgroundColor: primaryColor,
                     ),
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        // Handle the booking submission logic here
-                      }
-                    },
+                    onPressed: _onSubmit, // Gọi phương thức _onSubmit khi nhấn nút
                     child: const Text(
                       'Đặt lịch',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
@@ -386,8 +436,8 @@ class _BookingPageState extends State<BookingPage> {
       ),
       child: Text(
         selectedDate == null
-            ? 'Chọn ngày'
-            : '${selectedDate?.day}/${selectedDate?.month}/${selectedDate?.year}',
+            ? 'Chưa chọn ngày'
+            : DateFormat('dd/MM/yyyy').format(selectedDate!),
         style: const TextStyle(fontSize: 16),
       ),
     );
