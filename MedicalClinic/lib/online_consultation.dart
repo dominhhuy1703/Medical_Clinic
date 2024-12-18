@@ -138,7 +138,7 @@ class _OnlineConsultationScreenState extends State<OnlineConsultationScreen> {
                 SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: () => _sendMessage(_messageController.text),
-                  child: Icon(Icons.send),
+                  child: Icon(Icons.send, color: Colors.white,),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF1F2B6C),
                     shape: RoundedRectangleBorder(

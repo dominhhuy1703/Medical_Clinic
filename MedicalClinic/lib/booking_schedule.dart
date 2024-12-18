@@ -7,8 +7,6 @@ import 'credit_card.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
-
-
 class BookingPage extends StatefulWidget {
   const BookingPage({Key? key}) : super(key: key);
 
@@ -42,9 +40,6 @@ class _BookingPageState extends State<BookingPage> {
     _fetchUserInfo();
     _fetchDepartments();
   }
-  //URL Vnpay
-
-
 
   Future<void> _fetchUserInfo() async {
     try {
@@ -175,21 +170,18 @@ class _BookingPageState extends State<BookingPage> {
       );
 
       if (response != null) {
-        // Nếu tạo lịch hẹn thành công
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Lịch hẹn đã được tạo thành công')),
         );
       } else {
-        // Nếu không có phản hồi hoặc lỗi trong quá trình tạo lịch hẹn
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Không thể tạo lịch hẹn')),
         );
       }
     } catch (e) {
-      // Xử lý lỗi khi API gọi gặp sự cố
       print('create appointment: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('DONE')),
+        const SnackBar(content: Text('Đặt lịch thành công')),
       );
     } finally {
 
@@ -382,13 +374,13 @@ class _BookingPageState extends State<BookingPage> {
                 ),
                 const SizedBox(height: 12),
                 _buildTimePicker(),
-                const SizedBox(height: 12),
-                Text(
-                  'Phí khám: ${consultationFee != null ? NumberFormat.currency(
-                      symbol: '₫').format(consultationFee) : 'Chưa có'}',
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
-                ),
+                // const SizedBox(height: 12),
+                // Text(
+                //   'Phí khám: ${consultationFee != null ? NumberFormat.currency(
+                //       symbol: '₫').format(consultationFee) : 'Chưa có'}',
+                //   style: const TextStyle(
+                //       fontSize: 16, fontWeight: FontWeight.bold),
+                // ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
